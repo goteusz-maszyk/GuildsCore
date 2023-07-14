@@ -15,24 +15,21 @@ import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class Guild {
     private final String id;
     private String name;
-    protected Component prefix = Component.empty();
-    protected Component suffix = Component.empty();
-    protected Material icon = Material.COBBLESTONE;
+    private Component prefix = Component.empty();
+    private Component suffix = Component.empty();
+    private @NotNull Material icon = Material.COBBLESTONE;
 
-    protected List<UUID> players = new ArrayList<>();
-    protected Team bukkitTeam;
-    protected final GuildHeart heart;
+    private final List<UUID> players = new ArrayList<>();
+    private Team bukkitTeam;
+    private final GuildHeart heart;
 
     private final GuildConfiguration config;
-    protected final GuildManager guildManager;
+    private final GuildManager guildManager;
     private final List<UUID> invites = new ArrayList<>();
     private NamedTextColor color;
 
@@ -106,6 +103,11 @@ public class Guild {
         return icon;
     }
 
+    public void setIcon(Material icon) {
+        this.icon = Objects.requireNonNullElse(icon, Material.COBBLESTONE);
+        config.set("icon", Objects.requireNonNullElse(icon, Material.COBBLESTONE));
+    }
+
     /**
      * @return A copy of guild player list
      */
@@ -171,12 +173,15 @@ public class Guild {
                 .append(Component.text(" do gildii!").color(NamedTextColor.GREEN)), true);
     }
 
-    public void sendInviteNotification(Player target, @NotNull OfflinePlayer inviter) {
+    public void sendInviteNotification(Player target, @Nullable OfflinePlayer inviter) {
         if(!invites.contains(target.getUniqueId())) return;
         Component message = Component.text("Zostałeś zaproszony").color(NamedTextColor.GREEN);
+        if(inviter != null) {
+            message = message
+                    .append(Component.text(" przez ").color(NamedTextColor.GREEN))
+                    .append(Component.text(inviter.getName()).color(NamedTextColor.AQUA));
+        }
         message = message
-                .append(Component.text(" przez ").color(NamedTextColor.GREEN))
-                .append(Component.text(inviter.getName()).color(NamedTextColor.AQUA))
                 .append(Component.text(" do gidii ").color(NamedTextColor.GREEN))
                 .append(Component.text(name).color(NamedTextColor.GOLD))
                 .append(Component.text(". KLIKNIJ TUTAJ BY DOŁĄCZYĆ").color(NamedTextColor.BLUE)
@@ -197,6 +202,7 @@ public class Guild {
         this.prefix = MiniMessage.miniMessage().deserialize(config.getString("prefix", ""));
         this.suffix = MiniMessage.miniMessage().deserialize(config.getString("suffix", ""));
         this.color = Optional.ofNullable(config.getString("color")).map(NamedTextColor.NAMES::value).orElse(null);
+        this.icon = Material.valueOf(config.getString("icon"));
 
         this.players.clear();
         for (String uuid : config.getStringList("players")) {
@@ -238,5 +244,9 @@ public class Guild {
         this.bukkitTeam.unregister();
         this.config.getFile().delete();
         this.guildManager.getGuilds().remove(id);
+    }
+
+    public List<UUID> getInvites() {
+        return invites;
     }
 }

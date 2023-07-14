@@ -1,6 +1,7 @@
 package me.gotitim.guildscore;
 
 import me.gotitim.guildscore.commands.GuildCommand;
+import me.gotitim.guildscore.commands.ShopCommand;
 import me.gotitim.guildscore.guilds.GuildManager;
 import me.gotitim.guildscore.listener.*;
 import me.gotitim.guildscore.placeholders.GuildPlaceholders;
@@ -10,14 +11,10 @@ import me.gotitim.guildscore.placeholders.ServerPlaceholders;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.Server;
-import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
@@ -26,7 +23,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
-import java.util.UUID;
 
 
 public final class GuildsCore extends JavaPlugin {
@@ -62,6 +58,8 @@ public final class GuildsCore extends JavaPlugin {
         new GuildPlaceholders(this).register();
 
         new GuildCommand(this);
+        new ShopCommand(this);
+
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             new PlayerJoinListener(this).onJoin(new PlayerJoinEvent(onlinePlayer, Component.text("")));
         }

@@ -1,6 +1,5 @@
 package me.gotitim.guildscore.guilds;
 
-import com.google.protobuf.ExperimentalApi;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,7 +7,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
-//TODO: Guild Heart
+
+//TODO: Guild Heart Upgrades
 public class GuildHeart {
     private final Guild guild;
     protected Location location;
@@ -18,29 +18,32 @@ public class GuildHeart {
     public GuildHeart(@NotNull Guild guild) {
         this.guild = guild;
         GuildConfiguration config = guild.getConfig();
-        ConfigurationSection section = config.getConfigurationSection("heart_upgrades");
+        ConfigurationSection section = config.getConfigurationSection("heart.upgrades");
         if(section == null) {
-            config.set("heart_upgrades." + Upgrade.WORKING_RADIUS, 0);
+            config.set("heart.upgrades." + Upgrade.WORKING_RADIUS, 0);
             return;
         }
         for (String upgrade : section.getKeys(false)) {
-            upgrades.put(Upgrade.valueOf(upgrade), config.getInt("heart_upgrades." + upgrade));
+            upgrades.put(Upgrade.valueOf(upgrade), config.getInt("heart.upgrades." + upgrade));
         }
 
-        this.location = config.getLocation("location", Bukkit.getWorld("world").getSpawnLocation());
-        config.set("location", location);
+        this.location = config.getLocation("heart.location", Bukkit.getWorld("world").getSpawnLocation());
+        config.set("heart.location", location);
+        this.placed = config.getBoolean("heart.placed");
     }
 
     public void place(Location location) {
         placed = true;
         this.location = location;
-        guild.getConfig().set("location", location);
+        guild.getConfig().set("heart.location", location);
+        guild.getConfig().set("heart.placed", true);
     }
 
     public void pickup() {
         placed = false;
         this.location = Bukkit.getWorld("world").getSpawnLocation();
-        guild.getConfig().set("location", location);
+        guild.getConfig().set("heart.location", location);
+        guild.getConfig().set("heart.placed", false);
     }
 
     public boolean isPlaced() {
@@ -52,7 +55,8 @@ public class GuildHeart {
     }
 
     public void loadConfig() {
-        this.location = guild.getConfig().getLocation("location", Bukkit.getWorld("world").getSpawnLocation());
+        this.location = guild.getConfig().getLocation("heart.location", Bukkit.getWorld("world").getSpawnLocation());
+        this.placed = guild.getConfig().getBoolean("heart.placed");
     }
 
     public enum Upgrade {

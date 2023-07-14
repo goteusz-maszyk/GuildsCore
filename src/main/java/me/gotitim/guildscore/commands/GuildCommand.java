@@ -9,6 +9,7 @@ import me.gotitim.guildscore.item.GuildHeartItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,6 +17,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -73,8 +75,10 @@ public class GuildCommand extends Command {
                 TeamDispaySubcommand.color(player, args, plugin);
             case "name" ->
                 TeamDispaySubcommand.name(player, args, plugin);
+            case "icon" ->
+                TeamDispaySubcommand.icon(player, args, plugin);
 
-            case "giveheart" ->
+            case "giveheart" -> //TODO: Testing only
                 giveHeart(player);
         }
         return true;
@@ -126,7 +130,7 @@ public class GuildCommand extends Command {
     @Override
     public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) throws IllegalArgumentException {
         @NotNull List<String> results = new ArrayList<>();
-        Guild guild = plugin.getGuildManager().getGuild(sender);
+        Guild guild = sender instanceof Player player ? plugin.getGuildManager().getGuild(player) : null;
 
         if(args.length == 1) {
             if(sender.hasPermission("guildscore.save")) results.add("save");
@@ -143,12 +147,14 @@ public class GuildCommand extends Command {
                 results.add("name");
                 results.add("delete");
                 results.add("giveheart");
+                results.add("icon");
             }
         } else if (args.length >= 2) {
             switch (args[0]) {
                 case "color" -> results.addAll(NamedTextColor.NAMES.values().stream().map(NamedTextColor::toString).toList());
                 case "invite" -> results.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).toList());
                 case "join" -> results.addAll(plugin.getGuildManager().getGuilds().values().stream().map(Guild::getId).toList());
+                case "icon" -> results.addAll(Arrays.stream(Material.values()).map(Material::toString).toList());
             }
         }
 

@@ -3,7 +3,9 @@ package me.gotitim.guildscore.commands.guild;
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -61,5 +63,24 @@ public class TeamDispaySubcommand {
         guild.setName(name);
         player.sendMessage(Component.text("Ustawiono nazwę gildii na ").color(NamedTextColor.GREEN)
                 .append(Component.text(guild.getName()).color(NamedTextColor.GOLD)));
+    }
+
+    public static void icon(Player player, String[] args, GuildsCore plugin) {
+        Guild guild = guildCheck(plugin, player);
+        if(guild == null) return;
+        if(args.length < 2) {
+            guild.setIcon(null);
+            player.sendMessage(Component.text("Zresetowano ikonę gildii."));
+            return;
+        }
+        Material material = Material.getMaterial(args[1]);
+        if(material == null) {
+            player.sendMessage(Component.text("Podaj prawidłową nazwę przedmiotu.").color(NamedTextColor.RED));
+            return;
+        }
+        guild.setIcon(material);
+        player.sendMessage(Component.text("Ustawiono ikonę gildii na ").color(NamedTextColor.GREEN)
+                .append(Component.text(guild.getIcon().toString()).color(NamedTextColor.GOLD)
+                        .hoverEvent(HoverEvent.showItem(guild.getIcon().key(), 1))));
     }
 }

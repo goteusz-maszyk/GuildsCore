@@ -2,13 +2,22 @@ package me.gotitim.guildscore.item;
 
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EnderCrystal;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
-//TODO: Guild Heart
+import java.util.List;
+
 public class GuildHeartItem extends ItemBuilder {
     private final Guild guild;
     public final NamespacedKey guildIdKey;
@@ -21,6 +30,7 @@ public class GuildHeartItem extends ItemBuilder {
         this.guild = guild;
         setName("§r§bGuild Heart");
         setPersistentData(core.itemIdKey, PersistentDataType.STRING, "GUILD_HEART");
+        setPersistentData(guildIdKey, PersistentDataType.STRING, guild.getId());
     }
 
     public GuildHeartItem(GuildsCore core, ItemStack is) {
@@ -35,6 +45,36 @@ public class GuildHeartItem extends ItemBuilder {
 
     @Override
     public void onClick(PlayerInteractEvent event) {
-        event.setCancelled(true);
+        if(!event.getAction().isRightClick()) return;
+        if(event.getClickedBlock() == null) return;
+        if(event.getClickedBlock().getType() != Material.OBSIDIAN && event.getClickedBlock().getType() != Material.BEDROCK) return;
+        if(event.getItem().getType() != Material.END_CRYSTAL) return;
+
+        if(guild.getHeart().isPlaced()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(Component.text("Nie możesz postawić serca, gdy już jest jakieś!").color(NamedTextColor.RED));
+        }
+
+        Bukkit.getScheduler().runTask(core, () -> {
+            List<Entity> entities = event.getPlayer().getNearbyEntities(5, 5, 5);
+
+            for (Entity entity : entities) {
+                if (EntityType.ENDER_CRYSTAL != entity.getType()) continue;
+
+                EnderCrystal crystal = (EnderCrystal) entity;
+                Block belowCrystal = crystal.getLocation().getBlock().getRelative(BlockFace.DOWN);
+
+                if (!event.getClickedBlock().equals(belowCrystal)) continue;
+
+                guild.broadcast(Component.text("Gracz ").color(NamedTextColor.GREEN)
+                                .append(Component.text(event.getPlayer().getName()).color(NamedTextColor.AQUA))
+                                .append(Component.text(" postawił serce gildii!")),
+                        true);
+                guild.getHeart().place(crystal.getLocation());
+
+                break;
+            }
+        });
+
     }
 }

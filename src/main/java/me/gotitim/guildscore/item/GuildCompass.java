@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public final class GuildCompass extends ItemBuilder { //TODO: test
+public final class GuildCompass extends ItemBuilder {
     private final GuildsCore core;
     public final NamespacedKey guildIdKey;
 
