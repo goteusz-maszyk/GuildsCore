@@ -1,0 +1,15 @@
+tablist:
+  header:
+    - "        <gold>»»» GILDIE SOKOWY «««</gold>        "
+    - ""
+  footer:
+    - ""
+    - "        <blue>Ping: %player_ping%ms</blue> | <green>GRACZY ONLINE: %server_onlinecount%</green>        "
+    - "<gold>Gildia: %guild_name%</gold>"
+
+# Coloring standard:
+# Gold - guild
+# Green - success notification
+# Blue - clickable chat
+# Aqua - Player names
+# Red/Yellow - Errors

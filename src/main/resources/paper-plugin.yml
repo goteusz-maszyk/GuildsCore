@@ -1,0 +1,7 @@
+name: GuildsCore
+version: '${project.version}'
+main: me.gotitim.guildscore.GuildsCore
+api-version: '1.20'
+authors: [gotitim]
+description: Dedicated plugin "core"
+load: POSTWORLD
