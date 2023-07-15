@@ -92,16 +92,8 @@ public class Placeholders {
             }
 
             final PlaceholderPlugin plugin = plugins.get(identifierString.toLowerCase(Locale.ROOT));
-            if (plugin == null) {
-                builder.append('%').append(identifierString);
+            final String replacement = plugin == null ? null : plugin.apply(player, parametersString).toString();
 
-                if (identified) builder.append('_');
-
-                builder.append(parametersString).append('%');
-                continue;
-            }
-
-            final String replacement = plugin.apply(player, parametersString).toString();
             if (replacement == null) {
                 builder.append('%').append(identifierString);
 
