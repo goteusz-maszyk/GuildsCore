@@ -39,7 +39,7 @@ public class GuildCommand extends Command {
         }
 
         if(args[0].equalsIgnoreCase("save")) {
-            if(!sender.hasPermission("guildscore.save")) {sender.sendMessage(plugin.getNoPermissionMessage());return false;}
+            if(!sender.hasPermission("guildscore.save")) {sender.sendMessage(GuildsCore.getNoPermissionMessage());return false;}
 
             plugin.getGuildManager().getGuilds().values().forEach(g -> g.getConfig().save());
             sender.sendMessage(Component.text("Zapisano dane gildii.").color(NamedTextColor.GREEN));
@@ -47,7 +47,7 @@ public class GuildCommand extends Command {
         }
 
         if(args[0].equalsIgnoreCase("load")) {
-            if(!sender.hasPermission("guildscore.load")) {sender.sendMessage(plugin.getNoPermissionMessage());return false;}
+            if(!sender.hasPermission("guildscore.load")) {sender.sendMessage(GuildsCore.getNoPermissionMessage());return false;}
 
             plugin.getGuildManager().getGuilds().values().forEach(g -> g.getConfig().reload());
             sender.sendMessage(Component.text("Załadowano dane gildii.").color(NamedTextColor.GREEN));

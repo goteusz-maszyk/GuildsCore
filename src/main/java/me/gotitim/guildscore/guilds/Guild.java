@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class Guild {
+    public static final Map<Material, Integer> BANK_MATERIALS = new HashMap<>();
     private final String id;
     private String name;
     private Component prefix = Component.empty();
@@ -32,6 +34,7 @@ public class Guild {
     private final GuildManager guildManager;
     private final List<UUID> invites = new ArrayList<>();
     private NamedTextColor color;
+    private int bank;
 
     /**
      * Creates a new guild, used in a /guild create command
@@ -46,13 +49,14 @@ public class Guild {
         this.guildManager = guildManager;
         this.id = id;
         this.config = GuildConfiguration.setup(this);
-        this.heart = new GuildHeart(this);
         this.name = name;
         players.add(player.getUniqueId());
 
         config.set("id", id);
         config.set("name", name);
         config.set("players", mapUUIDs());
+
+        this.heart = new GuildHeart(this);
 
         player.getInventory().addItem(new GuildHeartItem(this).toItemStack());
 
@@ -64,7 +68,7 @@ public class Guild {
      * @param config Guild config
      * @param guildManager Current guild manager instance
      */
-    Guild(GuildConfiguration config, GuildManager guildManager) {
+    Guild(@NotNull GuildConfiguration config, GuildManager guildManager) {
         this.id = config.getString("id");
         this.config = config;
         this.guildManager = guildManager;
@@ -105,7 +109,7 @@ public class Guild {
 
     public void setIcon(Material icon) {
         this.icon = Objects.requireNonNullElse(icon, Material.COBBLESTONE);
-        config.set("icon", Objects.requireNonNullElse(icon, Material.COBBLESTONE));
+        config.set("icon", Objects.requireNonNullElse(icon, Material.COBBLESTONE).name());
     }
 
     /**
@@ -202,7 +206,8 @@ public class Guild {
         this.prefix = MiniMessage.miniMessage().deserialize(config.getString("prefix", ""));
         this.suffix = MiniMessage.miniMessage().deserialize(config.getString("suffix", ""));
         this.color = Optional.ofNullable(config.getString("color")).map(NamedTextColor.NAMES::value).orElse(null);
-        this.icon = Material.valueOf(config.getString("icon"));
+        this.icon = Objects.requireNonNullElse(Material.getMaterial(config.getString("icon")), Material.COBBLESTONE);
+        this.bank = config.getInt("bank");
 
         this.players.clear();
         for (String uuid : config.getStringList("players")) {
@@ -248,5 +253,23 @@ public class Guild {
 
     public List<UUID> getInvites() {
         return invites;
+    }
+
+    public Component getNameComponent() {
+        return Component.text(name).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+    }
+
+    public int getBank() {
+        return bank;
+    }
+
+    public void bankWithdraw(int amount) {
+        bank -= amount;
+        config.set("bank", bank);
+    }
+
+    public void bankDeposit(int amount) {
+        bank += amount;
+        config.set("bank", bank);
     }
 }

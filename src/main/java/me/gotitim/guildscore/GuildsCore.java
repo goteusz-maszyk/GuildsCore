@@ -1,5 +1,6 @@
 package me.gotitim.guildscore;
 
+import me.gotitim.guildscore.commands.BankCommand;
 import me.gotitim.guildscore.commands.GuildCommand;
 import me.gotitim.guildscore.commands.ShopCommand;
 import me.gotitim.guildscore.guilds.GuildManager;
@@ -10,6 +11,7 @@ import me.gotitim.guildscore.placeholders.PlayerPlaceholders;
 import me.gotitim.guildscore.placeholders.ServerPlaceholders;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -59,6 +61,7 @@ public final class GuildsCore extends JavaPlugin {
 
         new GuildCommand(this);
         new ShopCommand(this);
+        new BankCommand(this);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             new PlayerJoinListener(this).onJoin(new PlayerJoinEvent(onlinePlayer, Component.text("")));
@@ -90,7 +93,11 @@ public final class GuildsCore extends JavaPlugin {
         }
     }
 
-    public Component getNoPermissionMessage() {
+    public static Component getNoPermissionMessage() {
         return Component.text("Nie masz uprawnień, by to zrobić!").color(NamedTextColor.RED);
+    }
+
+    public static Component loreComponent(Object line) {
+        return Component.text(line.toString()).decoration(TextDecoration.ITALIC, false);
     }
 }

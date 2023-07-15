@@ -6,6 +6,7 @@ tablist:
     - ""
     - "        <blue>Ping: %player_ping%ms</blue> | <green>GRACZY ONLINE: %server_onlinecount%</green>        "
     - "<gold>Gildia: %guild_name%</gold>"
+    - "<white>Bank: </white><gold>%guild_bank%</gold>"
 
 # Coloring standard:
 # Gold - guild

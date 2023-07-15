@@ -24,6 +24,8 @@ public class GuildPlaceholders extends Placeholders.PlaceholderPlugin {
                     guild == null ? "Brak" : guild.getName();
             case "playercount" ->
                     guild == null ? 0 : guild.getPlayers().size();
+            case "bank" ->
+                    guild == null ? 0 : guild.getBank();
             default -> parametersString;
         };
     }

@@ -3,6 +3,7 @@ package me.gotitim.guildscore.guilds;
 import me.gotitim.guildscore.GuildsCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -16,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class GuildManager {
@@ -48,10 +50,13 @@ public class GuildManager {
             guilds.put(gc.getString("id").split("\\.")[0], guild);
             gc.setGuild(guild);
         }
+
+        Guild.BANK_MATERIALS.put(Material.IRON_INGOT, 1);
+        Guild.BANK_MATERIALS.put(Material.GOLD_INGOT, 2);
     }
 
     public @NotNull Team getOrCreateTeam(@NotNull String name) {
-        return Optional.ofNullable(mainScoreboard.getTeam(name)).orElseGet(() -> mainScoreboard.registerNewTeam(name));
+        return Objects.requireNonNullElseGet(mainScoreboard.getTeam(name), () -> mainScoreboard.registerNewTeam(name));
     }
 
     public Map<String, Guild> getGuilds() {
