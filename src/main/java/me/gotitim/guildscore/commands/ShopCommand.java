@@ -43,7 +43,6 @@ public class ShopCommand extends Command {
             return false;
         }
         createInventory(player, guild);
-        player.getWorld().strikeLightningEffect(player.getLocation());
         return true;
     }
 
