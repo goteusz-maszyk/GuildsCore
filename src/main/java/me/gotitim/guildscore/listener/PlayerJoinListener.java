@@ -2,7 +2,6 @@ package me.gotitim.guildscore.listener;
 
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
-import me.gotitim.guildscore.item.GuildCompass;
 import me.gotitim.guildscore.placeholders.Placeholders;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -34,7 +33,6 @@ public final class PlayerJoinListener implements Listener {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             updatePlayerTablist(onlinePlayer);
         }
-        player.getInventory().addItem(new GuildCompass(plugin).toItemStack()); // TODO: TESTING ONLY
 
         for (Guild guild : plugin.getGuildManager().getGuilds().values()) {
             if(!guild.getInvites().contains(player.getUniqueId()))continue;

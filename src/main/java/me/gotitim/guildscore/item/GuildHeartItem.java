@@ -7,7 +7,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EnderCrystal;
@@ -22,28 +21,19 @@ import java.util.List;
 import static me.gotitim.guildscore.listener.HeartListener.distanceHorizontal;
 
 public class GuildHeartItem extends ItemBuilder {
-    private final Guild guild;
-    public final NamespacedKey guildIdKey;
     private final GuildsCore core;
 
-    public GuildHeartItem(Guild guild) {
+    public GuildHeartItem(GuildsCore core) {
         super(Material.END_CRYSTAL);
-        core = guild.getGuildManager().getPlugin();
-        guildIdKey = new NamespacedKey(core, "guildId");
-        this.guild = guild;
+        this.core = core;
         setName("§r§bGuild Heart");
         setPersistentData(core.itemIdKey, PersistentDataType.STRING, "GUILD_HEART");
-        setPersistentData(guildIdKey, PersistentDataType.STRING, guild.getId());
     }
 
     public GuildHeartItem(GuildsCore core, ItemStack is) {
         super(is);
         this.core = core;
-        guildIdKey = new NamespacedKey(core, "guildId");
         setName("§r§bGuild Heart");
-
-        String guildId = getPersistentData(guildIdKey, PersistentDataType.STRING);
-        guild = core.getGuildManager().getGuild(guildId);
     }
 
     @Override
@@ -52,16 +42,20 @@ public class GuildHeartItem extends ItemBuilder {
         if(event.getClickedBlock() == null) return;
         if(event.getClickedBlock().getType() != Material.OBSIDIAN && event.getClickedBlock().getType() != Material.BEDROCK) return;
         if(event.getItem().getType() != Material.END_CRYSTAL) return;
-
+        Guild guild = core.getGuildManager().getGuild(event.getPlayer());
+        if(guild == null) {
+            event.getPlayer().sendMessage("Nie jesteś w gildii");
+            return;
+        }
         if(guild.getHeart().isPlaced()) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(Component.text("Nie możesz postawić serca, gdy już jest jakieś!").color(NamedTextColor.RED));
             return;
         }
         Location loc = event.getClickedBlock().getLocation();
-        for (Guild guild : core.getGuildManager().getGuilds().values()) {
-            Location heart = guild.getHeart().getLocation();
-            if(guild.getHeart().isPlaced() && distanceHorizontal(loc, heart) < 16*24) {
+        for (Guild g : core.getGuildManager().getGuilds().values()) {
+            Location heart = g.getHeart().getLocation();
+            if(g.getHeart().isPlaced() && distanceHorizontal(loc, heart) < 16*24) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(Component.text("Nie możesz postawić serca, gdy w promieniu 24 chunków jest inna gildia!").color(NamedTextColor.RED));
                 return;

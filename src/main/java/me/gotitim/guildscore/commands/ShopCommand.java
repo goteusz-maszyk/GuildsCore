@@ -5,7 +5,9 @@ import me.gotitim.guildscore.guilds.Guild;
 import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.item.CoreInventoryHolder;
 import me.gotitim.guildscore.item.ItemBuilder;
+import net.kyori.adventure.nbt.api.BinaryTagHolder;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -14,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,7 +78,15 @@ public class ShopCommand extends Command {
                 item.addLoreLine(loreComponent("Cost: ").color(NamedTextColor.WHITE).append(loreComponent(levelPrice).color(NamedTextColor.GOLD)));
             }
             item.setPersistentData(upgradeKey, PersistentDataType.STRING, upgrade.name());
-            inv.setItem(upgrade.getShopSlot(), item.toItemStack()); //TODO: Add cost
+            inv.setItem(upgrade.getShopSlot(), item.toItemStack());
+        }
+
+        for (String key : plugin.getConfig().getConfigurationSection("items").getKeys(false)) {
+            int cost = plugin.getConfig().getInt("items." + key + ".cost");
+            ItemBuilder item = ItemBuilder.get(plugin, key)
+                    .addLoreLine(loreComponent("Cost: ").color(NamedTextColor.WHITE).append(loreComponent(cost).color(NamedTextColor.GOLD)))
+                    .setPersistentData(upgradeKey, PersistentDataType.STRING, key);
+            inv.setItem(plugin.getConfig().getInt("items." + key + ".slot"), item.toItemStack());
         }
 
         ItemBuilder bankDisplay = new ItemBuilder(Material.GOLD_INGOT)
@@ -90,7 +101,7 @@ public class ShopCommand extends Command {
 
         if(event.isShiftClick()) return;
         if(event.getClickedInventory() == null) return;
-        ItemBuilder item = new ItemBuilder(event.getCurrentItem());
+        ItemBuilder item = ItemBuilder.get(plugin, event.getCurrentItem());
         if(item.toItemStack() == null) return;
         if(item.getPersistentData(upgradeKey, PersistentDataType.STRING) == null) return;
 
@@ -101,7 +112,27 @@ public class ShopCommand extends Command {
             event.getClickedInventory().close();
             return;
         }
-
+        if(upgrade == null) {
+            String itemId = item.getPersistentData(upgradeKey, PersistentDataType.STRING);
+            if(itemId == null) return;
+            int cost = plugin.getConfig().getInt("items." + itemId + ".cost");
+            if(guild.getBank() < cost) {
+                event.getWhoClicked().sendMessage(Component.text("Nie stać cię na to.").color(NamedTextColor.RED));
+                return;
+            }
+            for (ItemStack is : event.getWhoClicked().getInventory().addItem(ItemBuilder.get(plugin, itemId).toItemStack()).values()) {
+                event.getWhoClicked().getWorld().dropItem(event.getWhoClicked().getLocation(), is);
+            }
+            guild.broadcast(Component.text(event.getWhoClicked().getName(), NamedTextColor.AQUA)
+                    .append(Component.text(" zakupił na własny użytek ", NamedTextColor.GREEN))
+                    .append(item.getName().hoverEvent(
+                            HoverEvent.showItem(
+                                    HoverEvent.ShowItem.showItem(item.toItemStack().getType().key(), 1,
+                                            BinaryTagHolder.binaryTagHolder(item.toItemStack().getItemMeta().getAsString()))
+                            )
+                    )), true);
+            return;
+        }
         Boolean result = guild.getHeart().tryUpgradeLevel(upgrade);
         if(result == Boolean.TRUE) {
             guild.broadcast(Component.text(event.getWhoClicked().getName() + " ulepszył " + upgrade + " do poziomu " + guild.getHeart().getUpgrade(upgrade)), true);

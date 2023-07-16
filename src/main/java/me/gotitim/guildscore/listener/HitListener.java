@@ -31,7 +31,7 @@ public final class HitListener implements Listener {
             guild.getHeart().pickup();
 
             if(guild.getPlayers().contains(player.getUniqueId())) {
-                player.getInventory().addItem(new GuildHeartItem(guild).toItemStack());
+                player.getInventory().addItem(new GuildHeartItem(plugin).toItemStack());
                 guild.broadcast(Component.text("Gracz ").color(NamedTextColor.GREEN)
                                 .append(Component.text(player.getName()).color(NamedTextColor.AQUA))
                                 .append(Component.text(" podniósł serce gildii!")),

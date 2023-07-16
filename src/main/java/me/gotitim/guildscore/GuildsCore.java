@@ -73,7 +73,7 @@ public final class GuildsCore extends JavaPlugin {
         getServer().getPluginManager().addPermission(new Permission("guildscore.save", PermissionDefault.OP));
         getServer().getPluginManager().addPermission(new Permission("guildscore.load", PermissionDefault.OP));
 
-
+        getConfig().options().copyDefaults(true);
         HeartUpgrade.loadConfig(this);
     }
 

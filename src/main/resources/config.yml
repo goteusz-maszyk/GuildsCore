@@ -63,6 +63,13 @@ upgrades:
     slot: 24
     level_prices:
       - 1000
+items:
+  GUILD_COMPASS:
+    slot: 38
+    cost: 2000
+  GUILD_HEART:
+    slot: 42
+    cost: 2000
 # Coloring standard:
 # Gold - guild
 # Green - success notification

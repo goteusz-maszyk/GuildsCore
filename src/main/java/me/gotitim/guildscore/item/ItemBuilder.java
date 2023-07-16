@@ -36,6 +36,7 @@ public class ItemBuilder implements Cloneable {
     public ItemBuilder(Material m, int amount){
         is= new ItemStack(m, amount);
     }
+
     /**
      * Clone the ItemBuilder into a new one.
      * @return The cloned instance.
@@ -72,6 +73,9 @@ public class ItemBuilder implements Cloneable {
         im.setDisplayName(name);
         is.setItemMeta(im);
         return this;
+    }
+    public Component getName() {
+        return is.getItemMeta().displayName();
     }
     /**
      * Add an unsafe enchantment.
@@ -256,16 +260,17 @@ public class ItemBuilder implements Cloneable {
     public void onClick(PlayerInteractEvent event) {}
 
     public static ItemBuilder get(GuildsCore core, ItemStack is) {
-        switch (is.getItemMeta().getPersistentDataContainer().getOrDefault(core.itemIdKey, PersistentDataType.STRING, "")) {
-            case "GUILD_COMPASS" -> {
-                return new GuildCompass(core, is);
-            }
-            case "GUILD_HEART" -> {
-                return new GuildHeartItem(core, is);
-            }
-            default -> {
-                return new ItemBuilder(is);
-            }
-        }
+        return switch (is.getItemMeta().getPersistentDataContainer().getOrDefault(core.itemIdKey, PersistentDataType.STRING, "")) {
+            case "GUILD_COMPASS" -> new GuildCompass(core, is);
+            case "GUILD_HEART" -> new GuildHeartItem(core, is);
+            default -> new ItemBuilder(is);
+        };
+    }
+    public static ItemBuilder get(GuildsCore plugin, String key) {
+        return switch (key) {
+            case "GUILD_COMPASS" -> new GuildCompass(plugin);
+            case "GUILD_HEART" -> new GuildHeartItem(plugin);
+            default -> new ItemBuilder(Material.AIR); // placeholder
+        };
     }
 }

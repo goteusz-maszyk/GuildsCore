@@ -5,7 +5,6 @@ import me.gotitim.guildscore.commands.guild.CreateSubcommand;
 import me.gotitim.guildscore.commands.guild.JoinSubcommand;
 import me.gotitim.guildscore.commands.guild.TeamDispaySubcommand;
 import me.gotitim.guildscore.guilds.Guild;
-import me.gotitim.guildscore.item.GuildHeartItem;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -77,21 +76,8 @@ public class GuildCommand extends Command {
                 TeamDispaySubcommand.name(player, args, plugin);
             case "icon" ->
                 TeamDispaySubcommand.icon(player, args, plugin);
-
-            case "giveheart" -> //TODO: Testing only
-                giveHeart(player);
         }
         return true;
-    }
-
-    private void giveHeart(Player player) {
-        Guild guild = plugin.getGuildManager().getGuild(player);
-        if(guild == null) {
-            player.sendMessage(Component.text("W gildii nie jesteś").color(NamedTextColor.RED));
-            return;
-        }
-
-        player.getInventory().addItem(new GuildHeartItem(guild).toItemStack());
     }
 
     private void deleteGuild(Player player) {
@@ -146,7 +132,6 @@ public class GuildCommand extends Command {
                 results.add("color");
                 results.add("name");
                 results.add("delete");
-                results.add("giveheart");
                 results.add("icon");
             }
         } else if (args.length >= 2) {

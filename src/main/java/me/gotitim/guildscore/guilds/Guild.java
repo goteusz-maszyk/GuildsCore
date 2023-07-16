@@ -59,7 +59,7 @@ public class Guild {
 
         this.heart = new GuildHeart(this);
 
-        player.getInventory().addItem(new GuildHeartItem(this).toItemStack());
+        player.getInventory().addItem(new GuildHeartItem(getGuildManager().getPlugin()).toItemStack());
 
         setupBukkitTeam();
     }
