@@ -8,6 +8,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -227,6 +228,15 @@ public class Guild {
         }
     }
 
+    public void broadcastTitle(Title message) {
+        for (UUID uuid : players) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
+            player.showTitle(message);
+        }
+    }
+
     public void setPrefix(Component prefix) {
         this.prefix = prefix;
         bukkitTeam.prefix(prefix);
@@ -272,4 +282,5 @@ public class Guild {
         bank += amount;
         config.set("bank", bank);
     }
+
 }

@@ -5,6 +5,7 @@ import me.gotitim.guildscore.guilds.Guild;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -17,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
+
+import static me.gotitim.guildscore.listener.HeartListener.distanceHorizontal;
 
 public class GuildHeartItem extends ItemBuilder {
     private final Guild guild;
@@ -53,6 +56,16 @@ public class GuildHeartItem extends ItemBuilder {
         if(guild.getHeart().isPlaced()) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(Component.text("Nie możesz postawić serca, gdy już jest jakieś!").color(NamedTextColor.RED));
+            return;
+        }
+        Location loc = event.getClickedBlock().getLocation();
+        for (Guild guild : core.getGuildManager().getGuilds().values()) {
+            Location heart = guild.getHeart().getLocation();
+            if(guild.getHeart().isPlaced() && distanceHorizontal(loc, heart) < 16*24) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(Component.text("Nie możesz postawić serca, gdy w promieniu 24 chunków jest inna gildia!").color(NamedTextColor.RED));
+                return;
+            }
         }
 
         Bukkit.getScheduler().runTask(core, () -> {

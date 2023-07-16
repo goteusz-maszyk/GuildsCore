@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO: Guild Heart Upgrades
 public class GuildHeart {
     private final Guild guild;
     protected Location location;

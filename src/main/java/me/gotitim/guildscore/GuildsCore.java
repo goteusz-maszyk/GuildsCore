@@ -53,7 +53,8 @@ public final class GuildsCore extends JavaPlugin {
                 InventoryClickListener.class,
                 PlayerJoinListener.class,
                 ChatListener.class,
-                HitListener.class); } catch (Exception ignored) {}
+                HitListener.class,
+                HeartListener.class); } catch (Exception ignored) {}
 
         new ServerPlaceholders().register();
         new PlayerPlaceholders().register();
