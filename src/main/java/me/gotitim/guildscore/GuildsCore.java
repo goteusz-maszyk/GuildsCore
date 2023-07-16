@@ -4,6 +4,7 @@ import me.gotitim.guildscore.commands.BankCommand;
 import me.gotitim.guildscore.commands.GuildCommand;
 import me.gotitim.guildscore.commands.ShopCommand;
 import me.gotitim.guildscore.guilds.GuildManager;
+import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.listener.*;
 import me.gotitim.guildscore.placeholders.GuildPlaceholders;
 import me.gotitim.guildscore.placeholders.Placeholders;
@@ -12,6 +13,7 @@ import me.gotitim.guildscore.placeholders.ServerPlaceholders;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -70,6 +72,9 @@ public final class GuildsCore extends JavaPlugin {
 
         getServer().getPluginManager().addPermission(new Permission("guildscore.save", PermissionDefault.OP));
         getServer().getPluginManager().addPermission(new Permission("guildscore.load", PermissionDefault.OP));
+
+
+        HeartUpgrade.loadConfig(this);
     }
 
 
@@ -99,6 +104,6 @@ public final class GuildsCore extends JavaPlugin {
     }
 
     public static Component loreComponent(Object line) {
-        return Component.text(line.toString()).decoration(TextDecoration.ITALIC, false);
+        return MiniMessage.miniMessage().deserialize(line.toString()).decoration(TextDecoration.ITALIC, false);
     }
 }

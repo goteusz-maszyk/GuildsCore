@@ -2,7 +2,7 @@ package me.gotitim.guildscore.commands;
 
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
-import me.gotitim.guildscore.guilds.GuildHeart;
+import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.item.CoreInventoryHolder;
 import me.gotitim.guildscore.item.ItemBuilder;
 import net.kyori.adventure.text.Component;
@@ -66,11 +66,15 @@ public class ShopCommand extends Command {
             guildIcon.addLoreLine(loreComponent(Bukkit.getOfflinePlayer(uuid).getName()).color(NamedTextColor.AQUA));
         }
         inv.setItem(4, guildIcon.toItemStack());
-        for (GuildHeart.Upgrade upgrade : GuildHeart.Upgrade.values()) {
+        for (HeartUpgrade upgrade : HeartUpgrade.values()) {
             ItemBuilder item = new ItemBuilder(upgrade.getIcon())
                     .setName(loreComponent(upgrade + " " + guild.getHeart().getUpgrade(upgrade)).color(NamedTextColor.BLUE))
-                    .addLoreLine(loreComponent(upgrade.getDescription()).color(NamedTextColor.WHITE))
-                    .setPersistentData(upgradeKey, PersistentDataType.STRING, upgrade.name());
+                    .addLoreLine(upgrade.getDescription().color(NamedTextColor.WHITE));
+            int levelPrice = upgrade.getLevelPrice(guild.getHeart().getUpgrade(upgrade));
+            if(levelPrice != -1) {
+                item.addLoreLine(loreComponent("Cost: ").color(NamedTextColor.WHITE).append(loreComponent(levelPrice).color(NamedTextColor.GOLD)));
+            }
+            item.setPersistentData(upgradeKey, PersistentDataType.STRING, upgrade.name());
             inv.setItem(upgrade.getShopSlot(), item.toItemStack()); //TODO: Add cost
         }
 
@@ -90,7 +94,7 @@ public class ShopCommand extends Command {
         if(item.toItemStack() == null) return;
         if(item.getPersistentData(upgradeKey, PersistentDataType.STRING) == null) return;
 
-        GuildHeart.Upgrade upgrade = GuildHeart.Upgrade.valueOf(item.getPersistentData(upgradeKey, PersistentDataType.STRING));
+        HeartUpgrade upgrade = HeartUpgrade.valueOf(item.getPersistentData(upgradeKey, PersistentDataType.STRING));
         Guild guild = plugin.getGuildManager().getGuild((Player) event.getWhoClicked());
 
         if (guild == null) {

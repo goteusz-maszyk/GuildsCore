@@ -30,7 +30,7 @@ public final class PlayerJoinListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        tablistTasks.put(player.getUniqueId(), Bukkit.getScheduler().runTaskTimer(plugin, () -> updatePlayerTablist(player), 20*30, 20*30));
+        tablistTasks.put(player.getUniqueId(), Bukkit.getScheduler().runTaskTimer(plugin, () -> updatePlayerTablist(player), 20*10, 20*30));
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             updatePlayerTablist(onlinePlayer);
         }

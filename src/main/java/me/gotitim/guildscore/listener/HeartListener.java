@@ -2,7 +2,7 @@ package me.gotitim.guildscore.listener;
 
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
-import me.gotitim.guildscore.guilds.GuildHeart;
+import me.gotitim.guildscore.guilds.HeartUpgrade;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -26,9 +26,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+import static me.gotitim.guildscore.guilds.HeartUpgrade.*;
+
 public final class HeartListener implements Listener {
     private final GuildsCore plugin;
     private final Map<UUID, BukkitTask> fatigueTasks = new HashMap<>();
+    private final Map<UUID, BukkitTask> regenTasks = new HashMap<>();
 
     private final Map<UUID, Guild> normalAffectedPlayers = new HashMap<>();
     private final Map<UUID, Guild> warningPlayers = new HashMap<>();
@@ -40,7 +43,7 @@ public final class HeartListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
-        Guild guild = heartAffects(event.getBlock().getLocation(), event.getPlayer(), GuildHeart.Upgrade.WORKING_RADIUS);
+        Guild guild = heartAffects(event.getBlock().getLocation(), event.getPlayer(), WORKING_RADIUS);
         if (guild== null) return;
 
         final Set<Material> containerTypes = EnumSet.of(
@@ -48,14 +51,14 @@ public final class HeartListener implements Listener {
                 Material.TRAPPED_CHEST
         );
 
-        if(guild.getHeart().getUpgrade(GuildHeart.Upgrade.CHEST_LOCK) != 0 && containerTypes.contains(event.getBlock().getType())) {
+        if(guild.getHeart().getUpgrade(HeartUpgrade.CHEST_LOCK) != 0 && containerTypes.contains(event.getBlock().getType())) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(Component.text("Nie możesz niszczyć tu skrzyń").color(NamedTextColor.RED));
         }
     }
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
-        if(heartAffects(event.getBlock().getLocation(), event.getPlayer(), GuildHeart.Upgrade.WORKING_RADIUS) != null) {
+        if(heartAffects(event.getBlock().getLocation(), event.getPlayer(), WORKING_RADIUS) != null) {
             event.setCancelled(true);
             event.getPlayer().sendMessage(Component.text("Nie możesz stawiać tu bloków").color(NamedTextColor.RED));
         }
@@ -63,24 +66,27 @@ public final class HeartListener implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        Guild guild = heartAffects(event.getFrom(), event.getPlayer(), GuildHeart.Upgrade.WORKING_RADIUS);
+        Guild guild = heartAffects(event.getFrom(), event.getPlayer(), WORKING_RADIUS);
         if (guild!= null) {
-            int level = guild.getHeart().getUpgrade(GuildHeart.Upgrade.SLOWNESS);
+            int level = guild.getHeart().getUpgrade(SLOWNESS);
             if(level != 0) {
                 event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 20, level-1, true, true, false));
             }
-            int fatigueLevel = guild.getHeart().getUpgrade(GuildHeart.Upgrade.MINING_FATIGUE);
+            int fatigueLevel = guild.getHeart().getUpgrade(MINING_FATIGUE);
             if(fatigueLevel != 0) {
                 event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 20, fatigueLevel-1, true, true, false));
             }
         }
 
-        Guild healGuild = heartAffects(event.getFrom(), event.getPlayer(), GuildHeart.Upgrade.HEAL_RADIUS);
-        if(healGuild != null) {
-            event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION, 20, 1, false, false, false));
-        }
+        Guild healGuild = heartAffects(event.getFrom(), event.getPlayer(), HeartUpgrade.HEAL_RADIUS);
+        if(healGuild != null) try {
+            Objects.requireNonNull(regenTasks.put(event.getPlayer().getUniqueId(), Bukkit.getScheduler().runTaskTimer(plugin,
+                    () -> event.getPlayer().addPotionEffect(
+                            new PotionEffect(PotionEffectType.REGENERATION, 60, 1, true, true, false)
+                    ), 0, 19))).cancel();
+        } catch (NullPointerException ignored) {}
 
-        Guild warningGuild = heartAffects(event.getFrom(), event.getPlayer(), GuildHeart.Upgrade.WARNING_RADIUS);
+        Guild warningGuild = heartAffects(event.getFrom(), event.getPlayer(), WARNING_RADIUS);
         if(warningGuild != null) {
             warningGuild.broadcastTitle(Title.title(Component.text(event.getPlayer().getName()).color(NamedTextColor.AQUA)
                     .append(Component.text(" wszedł na teren gildii!").color(NamedTextColor.RED)), Component.empty()));
@@ -89,10 +95,10 @@ public final class HeartListener implements Listener {
 
     @EventHandler
     public void onMining(BlockDamageEvent event) {
-        Guild guild = heartAffects(event.getBlock().getLocation(), event.getPlayer(), GuildHeart.Upgrade.WORKING_RADIUS);
+        Guild guild = heartAffects(event.getBlock().getLocation(), event.getPlayer(), WORKING_RADIUS);
         if (guild== null) return;
 
-        int fatigueLevel = guild.getHeart().getUpgrade(GuildHeart.Upgrade.MINING_FATIGUE);
+        int fatigueLevel = guild.getHeart().getUpgrade(HeartUpgrade.MINING_FATIGUE);
         if(fatigueLevel != 0) {
             try {
                 Objects.requireNonNull(fatigueTasks.put(event.getPlayer().getUniqueId(), Bukkit.getScheduler().runTaskTimer(plugin,
@@ -116,9 +122,9 @@ public final class HeartListener implements Listener {
         if(block == null) return;
         if(!event.getAction().isRightClick()) return;
 
-        Guild guild = heartAffects(block.getLocation(), event.getPlayer(), GuildHeart.Upgrade.WORKING_RADIUS);
+        Guild guild = heartAffects(block.getLocation(), event.getPlayer(), WORKING_RADIUS);
         if (guild== null) return;
-        if(guild.getHeart().getUpgrade(GuildHeart.Upgrade.CHEST_LOCK) == 0) return;
+        if(guild.getHeart().getUpgrade(HeartUpgrade.CHEST_LOCK) == 0) return;
 
         final Set<Material> containerTypes = EnumSet.of(
                 Material.CHEST,
@@ -139,14 +145,14 @@ public final class HeartListener implements Listener {
         }
     }
 
-    private Guild heartAffects(Location location, @NotNull Player player, GuildHeart.Upgrade upgrade) {
+    private Guild heartAffects(Location location, @NotNull Player player, HeartUpgrade upgrade) {
         Guild g = affectedAlready(player, upgrade);
         if(g!= null) return g;
 
         for (Guild guild : plugin.getGuildManager().getGuilds().values()) {
             boolean contains = guild.getPlayers().contains(player.getUniqueId());
-            if(upgrade == GuildHeart.Upgrade.HEAL_RADIUS && !contains) continue;
-            if(upgrade != GuildHeart.Upgrade.HEAL_RADIUS && contains) continue;
+            if(upgrade == HeartUpgrade.HEAL_RADIUS && !contains) continue;
+            if(upgrade != HeartUpgrade.HEAL_RADIUS && contains) continue;
 
             int radius = guild.getHeart().getUpgrade(upgrade) * 16;
             if(!guild.getHeart().isPlaced()) continue;
@@ -159,9 +165,13 @@ public final class HeartListener implements Listener {
                 } else {
                     warningPlayers.put(player.getUniqueId(), guild);
                 }
-                switch (upgrade) {
-                    case WORKING_RADIUS -> normalAffectedPlayers.put(player.getUniqueId(), guild);
-                    case HEAL_RADIUS -> healedPlayers.put(player.getUniqueId(), guild);
+                if(healedPlayers.containsKey(player.getUniqueId())) {
+                    return null;
+                } else {
+                    healedPlayers.put(player.getUniqueId(), guild);
+                }
+                if (upgrade.equals(WORKING_RADIUS)) {
+                    normalAffectedPlayers.put(player.getUniqueId(), guild);
                 }
                 return guild;
             }
@@ -169,27 +179,28 @@ public final class HeartListener implements Listener {
         return null;
     }
 
-    private Guild affectedAlready(Player player, GuildHeart.Upgrade upgrade) {
-        switch (upgrade) {
-            case WORKING_RADIUS -> {
-                Guild g =normalAffectedPlayers.get(player.getUniqueId());
-                if(g==null) return null;
-                if(distanceHorizontal(g.getHeart().getLocation(), player.getLocation()) <= g.getHeart().getUpgrade(upgrade) * 16)
+    private Guild affectedAlready(Player player, HeartUpgrade upgrade) {
+        switch (upgrade.name()) {
+            case "WORKING_RADIUS" -> {
+                Guild g = normalAffectedPlayers.get(player.getUniqueId());
+                if (g == null) return null;
+                if (distanceHorizontal(g.getHeart().getLocation(), player.getLocation()) <= g.getHeart().getUpgrade(upgrade) * 16)
                     return g;
                 else normalAffectedPlayers.remove(player.getUniqueId());
                 return null;
             }
-            case HEAL_RADIUS -> {
-                Guild g =healedPlayers.get(player.getUniqueId());
-                if(g==null) return null;
-                if(distanceHorizontal(g.getHeart().getLocation(), player.getLocation()) <= g.getHeart().getUpgrade(upgrade) * 16)
-                    return g;
-                else healedPlayers.remove(player.getUniqueId());
+            case "HEAL_RADIUS" -> {
+                Guild g = healedPlayers.get(player.getUniqueId());
+                if (g == null) return null;
+                if (!(distanceHorizontal(g.getHeart().getLocation(), player.getLocation()) <= g.getHeart().getUpgrade(upgrade) * 16)) {
+                    healedPlayers.remove(player.getUniqueId());
+                    try{regenTasks.remove(player.getUniqueId()).cancel();}catch (NullPointerException ignored) {}
+                }
                 return null;
             }
-            case WARNING_RADIUS -> {
+            case "WARNING_RADIUS" -> {
                 Guild g = warningPlayers.get(player.getUniqueId());
-                if(g==null) return null;
+                if (g == null) return null;
                 if (!(distanceHorizontal(g.getHeart().getLocation(), player.getLocation()) <= g.getHeart().getUpgrade(upgrade) * 16)) {
                     warningPlayers.remove(player.getUniqueId());
                 }

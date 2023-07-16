@@ -7,7 +7,62 @@ tablist:
     - "        <blue>Ping: %player_ping%ms</blue> | <green>GRACZY ONLINE: %server_onlinecount%</green>        "
     - "<gold>Gildia: %guild_name%</gold>"
     - "<white>Bank: </white><gold>%guild_bank%</gold>"
-
+upgrades:
+  WORKING_RADIUS:
+    name: "Working radius"
+    description: "The heart main working radius, in multiples of 16"
+    icon: SMITHING_TABLE
+    slot: 19
+    level_prices:
+      - 0
+      - 50
+      - 100
+      - 500
+      - 1000
+  WARNING_RADIUS:
+    name: "Warning radius"
+    description: "The heart warning radius, in multiples of 16"
+    icon: ENDER_EYE
+    slot: 20
+    level_prices:
+      - 100
+      - 500
+      - 1000
+  HEAL_RADIUS:
+    name: "Healing radius"
+    description: "The heart healing radius, in multiples of 16"
+    icon: AMETHYST_CLUSTER
+    slot: 21
+    level_prices:
+      - 100
+      - 500
+      - 1000
+      - 1500
+  MINING_FATIGUE:
+    name: "Mining fatigue level"
+    description: "The level of mining fatigue effect, applied in the working radius"
+    icon: MINER_POTTERY_SHERD
+    slot: 22
+    level_prices:
+      - 100
+      - 500
+      - 1000
+  SLOWNESS:
+    name: "Slowness level"
+    description: "The level of slowness effect, applied in the working radius"
+    icon: MUD
+    slot: 23
+    level_prices:
+      - 100
+      - 500
+      - 1000
+  CHEST_LOCK:
+    name: "Chest locking"
+    description: "Chest locking, applied in the working radius"
+    icon: CHEST
+    slot: 24
+    level_prices:
+      - 1000
 # Coloring standard:
 # Gold - guild
 # Green - success notification
