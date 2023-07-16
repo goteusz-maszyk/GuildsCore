@@ -27,7 +27,7 @@ public class Placeholders {
         plugins.put(plugin.getId().toLowerCase(Locale.ROOT), plugin);
     }
 
-    private void set(String key, Object val) {
+    public void set(String key, Object val) {
         customPlaceholders.put("%" + key + "%", val.toString());
     }
 

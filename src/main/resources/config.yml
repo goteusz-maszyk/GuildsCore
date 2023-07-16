@@ -1,3 +1,4 @@
+guild_chat_format: "<green>[GuildChat] </green><aqua><%player_name%></aqua> %message%"
 tablist:
   header:
     - "        <gold>»»» GILDIE SOKOWY «««</gold>        "

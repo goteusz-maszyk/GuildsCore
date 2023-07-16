@@ -1,6 +1,7 @@
 package me.gotitim.guildscore;
 
 import me.gotitim.guildscore.commands.BankCommand;
+import me.gotitim.guildscore.commands.GuildChatCommand;
 import me.gotitim.guildscore.commands.GuildCommand;
 import me.gotitim.guildscore.commands.ShopCommand;
 import me.gotitim.guildscore.guilds.GuildManager;
@@ -65,6 +66,7 @@ public final class GuildsCore extends JavaPlugin {
         new GuildCommand(this);
         new ShopCommand(this);
         new BankCommand(this);
+        new GuildChatCommand(this);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             new PlayerJoinListener(this).onJoin(new PlayerJoinEvent(onlinePlayer, Component.text("")));

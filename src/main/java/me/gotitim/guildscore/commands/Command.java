@@ -6,10 +6,12 @@ import org.bukkit.command.defaults.BukkitCommand;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 public abstract class Command extends BukkitCommand {
-    public Command(@NotNull String name) {
+    public Command(@NotNull String name, String... aliases) {
         super(name);
+        setAliases(List.of(aliases));
 
         try {
             Field field = Bukkit.getServer().getClass().getDeclaredField("commandMap");
