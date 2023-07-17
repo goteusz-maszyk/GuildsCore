@@ -2,23 +2,25 @@ package me.gotitim.guildscore.guilds;
 
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.item.GuildHeartItem;
+import me.gotitim.guildscore.item.ItemBuilder;
+import me.gotitim.guildscore.placeholders.Placeholders;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static me.gotitim.guildscore.util.Components.*;
 
 public class Guild {
     public static final Map<Material, Integer> BANK_MATERIALS = new HashMap<>();
@@ -105,7 +107,7 @@ public class Guild {
         return heart;
     }
 
-    public Material getIcon() {
+    public @NotNull Material getIcon() {
         return icon;
     }
 
@@ -139,29 +141,22 @@ public class Guild {
      * @see Guild#invitePlayer(OfflinePlayer, OfflinePlayer, boolean)
      */
     public void addPlayer(Player player) {
+        Placeholders ph = new Placeholders(player);
         if (!invites.contains(player.getUniqueId()) && players.size() > 0) {
-            player.sendMessage(
-                    Component.text("Nie masz zaproszenia do gildii ").color(NamedTextColor.RED)
-                            .append(Component.text(name).color(NamedTextColor.GOLD)));
+            player.sendMessage(parseRaw("join.no_invite", ph.setValue("new_guild", this)));
             return;
         }
 
         invites.remove(player.getUniqueId());
         players.add(player.getUniqueId());
-
-        broadcast(Component.text("Gracz ").color(NamedTextColor.GREEN)
-                .append(Component.text(player.getName()).color(NamedTextColor.AQUA))
-                .append(Component.text(" dołączył do gildii!")),
-        true);
         bukkitTeam.addPlayer(player);
         config.set("players", mapUUIDs());
+
+        broadcast(parseRaw("join.notification", ph), true);
     }
 
     public void removePlayer(Player player) {
-        broadcast(Component.text("Gracz ").color(NamedTextColor.GREEN)
-                        .append(Component.text(player.getName()).color(NamedTextColor.AQUA))
-                        .append(Component.text(" opuszcza gildię!")),
-                true);
+        broadcast(parseRaw("guild_command.leave_notification", new Placeholders(player)), true);
 
         players.remove(player.getUniqueId());
         bukkitTeam.removePlayer(player);
@@ -171,31 +166,20 @@ public class Guild {
 
     public void invitePlayer(OfflinePlayer target, @NotNull OfflinePlayer inviter, boolean notify) {
         invites.add(target.getUniqueId());
-        if(notify && target.isOnline()) sendInviteNotification(target.getPlayer(), inviter);
+        Player targetPlayer = target.getPlayer();
+        if (!notify || targetPlayer == null) return;
 
-        broadcast(Component.text(inviter.getName()).color(NamedTextColor.AQUA)
-                .append(Component.text(" zaprosił gracza ").color(NamedTextColor.GREEN))
-                .append(Component.text(target.getName()).color(NamedTextColor.AQUA))
-                .append(Component.text(" do gildii!").color(NamedTextColor.GREEN)), true);
+        sendInviteNotification(targetPlayer, inviter);
+
+        broadcast(parseRaw("join.invite_notification", new Placeholders(targetPlayer).setValue("inviter", inviter)), true);
     }
 
     public void sendInviteNotification(Player target, @Nullable OfflinePlayer inviter) {
         if(!invites.contains(target.getUniqueId())) return;
-        Component message = Component.text("Zostałeś zaproszony").color(NamedTextColor.GREEN);
-        if(inviter != null) {
-            message = message
-                    .append(Component.text(" przez ").color(NamedTextColor.GREEN))
-                    .append(Component.text(inviter.getName()).color(NamedTextColor.AQUA));
-        }
-        message = message
-                .append(Component.text(" do gidii ").color(NamedTextColor.GREEN))
-                .append(Component.text(name).color(NamedTextColor.GOLD))
-                .append(Component.text(". KLIKNIJ TUTAJ BY DOŁĄCZYĆ").color(NamedTextColor.BLUE)
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/guild join " + id))
-                        .hoverEvent(HoverEvent.showText(Component.text("/guild join " + id)))
-                );
+        Placeholders ph = new Placeholders(target).setValue("inviter", inviter).setValue("new_guild", this);
 
-        target.sendMessage(message);
+        if(inviter != null) target.sendMessage(parseRaw("join.invited_inviter", ph));
+        else target.sendMessage(parseRaw("join.invited_no_inviter", ph));
     }
 
     private List<String> mapUUIDs() {
@@ -219,7 +203,7 @@ public class Guild {
     }
 
     public void broadcast(Component message, boolean decorate) {
-        Bukkit.getConsoleSender().sendMessage("[Guild " + id + "] >> " + LegacyComponentSerializer.builder().build().serialize(message));
+        Bukkit.getConsoleSender().sendMessage("[Guild " + id + "] >> " + legacyColors(message));
         for (UUID uuid : players) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
@@ -268,7 +252,7 @@ public class Guild {
     }
 
     public Component getNameComponent() {
-        return Component.text(name).color(NamedTextColor.GOLD).decoration(TextDecoration.ITALIC, false);
+        return loreComponent(name).color(NamedTextColor.GOLD);
     }
 
     public int getBank() {
@@ -285,4 +269,19 @@ public class Guild {
         config.set("bank", bank);
     }
 
+    public ItemStack getAsIcon() {
+        ItemBuilder ic = new ItemBuilder(icon)
+                .setName(getNameComponent())
+                .addLoreLine(loreComponentRaw("guild.tooltip_members"))
+                .setPersistentData(guildManager.getPlugin().guildIdKey, PersistentDataType.STRING, id);
+
+        for (UUID uuid : players) {
+            ic.addLoreLine(loreComponent(Bukkit.getOfflinePlayer(uuid).getName()).color(NamedTextColor.AQUA));
+        }
+        return ic.toItemStack();
+    }
+
+    public NamedTextColor getColor() {
+        return color;
+    }
 }

@@ -1,13 +1,21 @@
 package me.gotitim.guildscore.guilds;
 
 import me.gotitim.guildscore.GuildsCore;
+import me.gotitim.guildscore.item.ItemBuilder;
+import me.gotitim.guildscore.placeholders.Placeholders;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-import static me.gotitim.guildscore.GuildsCore.loreComponent;
+import static me.gotitim.guildscore.util.Components.loreComponent;
+import static me.gotitim.guildscore.util.Components.loreComponentRaw;
 
 public class HeartUpgrade {
     public static final Map<String, HeartUpgrade> VALUES = new HashMap<>();
@@ -58,8 +66,21 @@ public class HeartUpgrade {
         return levelPrices.size() > level ? levelPrices.get(level) : -1;
     }
 
-    public @NotNull Material getIcon() {
-        return icon;
+    public @NotNull ItemStack getIcon(Player player, NamespacedKey upgradeKey) {
+        Placeholders ph = new Placeholders()
+                .set("upgrade_name", "%upgrade_name_" + internal + "%")
+                .set("upgrade_level", "%upgrade_level_" + internal + "%")
+                .set("upgrade_cost", "%upgrade_cost_" + internal + "%")
+                .setPlayer(player);
+        ItemBuilder item = new ItemBuilder(icon)
+                .setName(loreComponentRaw("shop.upgrade_name", ph))
+                .addLoreLine(getDescription().color(NamedTextColor.WHITE));
+        int cost = Integer.parseInt(ph.apply("%upgrade_cost%"));
+        if(cost != -1) {
+            item.addLoreLine(loreComponentRaw("shop.cost", ph));
+        }
+        item.setPersistentData(upgradeKey, PersistentDataType.STRING, internal);
+        return item.toItemStack();
     }
 
     public int getShopSlot() {

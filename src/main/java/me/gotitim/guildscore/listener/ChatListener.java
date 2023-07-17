@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static me.gotitim.guildscore.util.Components.parseRaw;
+
 public final class ChatListener implements Listener {
     private static final Set<UUID> guildChatEnabled = new HashSet<>();
     private final GuildsCore plugin;
@@ -32,13 +34,13 @@ public final class ChatListener implements Listener {
         if(guildChatEnabled(event.getPlayer())) {
             event.setCancelled(true);
             Guild guild = plugin.getGuildManager().getGuild(event.getPlayer());
-            if(guild == null) {
-                event.getPlayer().sendMessage("Nie jesteś w gildii, więc nie możesz pisać na czacie gildii.");
-                return;
-            }
             Placeholders ph = new Placeholders();
             ph.set("message", event.getMessage());
             ph.setPlayer(event.getPlayer());
+            if(guild == null) {
+                event.getPlayer().sendMessage(parseRaw("guild.chat_unavailable", ph));
+                return;
+            }
             guild.broadcast(MiniMessage.miniMessage().deserialize(ph.apply(plugin.getConfig().getString("guild_chat_format"))), false);
         }
     }

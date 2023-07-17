@@ -3,8 +3,8 @@ package me.gotitim.guildscore.listener;
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
 import me.gotitim.guildscore.guilds.HeartUpgrade;
+import me.gotitim.guildscore.placeholders.Placeholders;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 import static me.gotitim.guildscore.guilds.HeartUpgrade.*;
+import static me.gotitim.guildscore.util.Components.parseRaw;
 
 public final class HeartListener implements Listener {
     private final GuildsCore plugin;
@@ -53,14 +54,14 @@ public final class HeartListener implements Listener {
 
         if(guild.getHeart().getUpgrade(HeartUpgrade.CHEST_LOCK) != 0 && containerTypes.contains(event.getBlock().getType())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("Nie możesz niszczyć tu skrzyń").color(NamedTextColor.RED));
+            event.getPlayer().sendMessage(parseRaw("heart.chest_unbreakable"));
         }
     }
     @EventHandler
     public void onPlace(BlockPlaceEvent event) {
         if(heartAffects(event.getBlock().getLocation(), event.getPlayer(), WORKING_RADIUS) != null) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("Nie możesz stawiać tu bloków").color(NamedTextColor.RED));
+            event.getPlayer().sendMessage(parseRaw("heart.cannot_place_blocks"));
         }
     }
 
@@ -88,8 +89,7 @@ public final class HeartListener implements Listener {
 
         Guild warningGuild = heartAffects(event.getFrom(), event.getPlayer(), WARNING_RADIUS);
         if(warningGuild != null) {
-            warningGuild.broadcastTitle(Title.title(Component.text(event.getPlayer().getName()).color(NamedTextColor.AQUA)
-                    .append(Component.text(" wszedł na teren gildii!").color(NamedTextColor.RED)), Component.empty()));
+            warningGuild.broadcastTitle(Title.title(parseRaw("heart.entered_warning", new Placeholders(event.getPlayer())), Component.empty()));
         }
     }
 
@@ -141,7 +141,7 @@ public final class HeartListener implements Listener {
 
         if(containerTypes.contains(block.getType())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Component.text("Nie możesz otwierać tu kontenerów").color(NamedTextColor.RED));
+            event.getPlayer().sendMessage(parseRaw("container_locked"));
         }
     }
 

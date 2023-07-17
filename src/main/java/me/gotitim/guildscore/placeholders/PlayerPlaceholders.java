@@ -1,7 +1,11 @@
 package me.gotitim.guildscore.placeholders;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
 
 public class PlayerPlaceholders extends Placeholders.PlaceholderPlugin {
     @Override
@@ -10,22 +14,29 @@ public class PlayerPlaceholders extends Placeholders.PlaceholderPlugin {
     }
 
     @Override
-    public Object apply(Player player, String parametersString) {
+    public @NotNull List<String> getAliases() {
+        return List.of("inviter");
+    }
+
+    @Override
+    public Object apply(Player p, @NotNull String alias, @NotNull String parametersString, @NotNull Map<String, Object> placeholderValues) {
+        OfflinePlayer offlinePlayer = alias.equals("inviter") && placeholderValues.get("inviter") instanceof OfflinePlayer ? (OfflinePlayer) placeholderValues.get("inviter") : p;
+        Player player = offlinePlayer.getPlayer();
         return switch (parametersString) {
             case "name" ->
-                player.getName();
+                offlinePlayer.getName();
             case "uuid" ->
-                player.getUniqueId();
+                offlinePlayer.getUniqueId();
 
             case "x" ->
-                player.getLocation().getX();
+                player == null ? null : player.getLocation().getX();
             case "y" ->
-                player.getLocation().getY();
+                    player == null ? null : player.getLocation().getY();
             case "z" ->
-                player.getLocation().getZ();
+                    player == null ? null : player.getLocation().getZ();
 
             case "ping" ->
-                player.getPing();
+                    player == null ? null : player.getPing();
             default -> parametersString;
         };
     }

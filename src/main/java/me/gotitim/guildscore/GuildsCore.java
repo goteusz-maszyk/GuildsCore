@@ -1,20 +1,13 @@
 package me.gotitim.guildscore;
 
-import me.gotitim.guildscore.commands.BankCommand;
-import me.gotitim.guildscore.commands.GuildChatCommand;
-import me.gotitim.guildscore.commands.GuildCommand;
-import me.gotitim.guildscore.commands.ShopCommand;
+import me.gotitim.guildscore.commands.*;
 import me.gotitim.guildscore.guilds.GuildManager;
 import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.listener.*;
-import me.gotitim.guildscore.placeholders.GuildPlaceholders;
-import me.gotitim.guildscore.placeholders.Placeholders;
-import me.gotitim.guildscore.placeholders.PlayerPlaceholders;
-import me.gotitim.guildscore.placeholders.ServerPlaceholders;
+import me.gotitim.guildscore.placeholders.*;
+import me.gotitim.guildscore.util.Components;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -34,6 +27,7 @@ public final class GuildsCore extends JavaPlugin {
     public static final Component MESSAGE_DECORATOR = Component.text("-----------------------------------------------------").color(NamedTextColor.AQUA);
     private final GuildManager guildManager;
     public final NamespacedKey itemIdKey = new NamespacedKey(this, "customitem");
+    public final NamespacedKey guildIdKey = new NamespacedKey(this, "guildId");
 
     public GuildsCore() {
         this.guildManager = new GuildManager(this);
@@ -49,7 +43,9 @@ public final class GuildsCore extends JavaPlugin {
                 e.printStackTrace();
             }
         }
+        getConfig().options().copyDefaults(true);
         this.guildManager.init();
+        Components.setCore(this);
 
         try { registerListeners(
                 InteractListener.class,
@@ -62,6 +58,7 @@ public final class GuildsCore extends JavaPlugin {
         new ServerPlaceholders().register();
         new PlayerPlaceholders().register();
         new GuildPlaceholders(this).register();
+        new GuildUpgradePlaceholders(this).register();
 
         new GuildCommand(this);
         new ShopCommand(this);
@@ -69,13 +66,12 @@ public final class GuildsCore extends JavaPlugin {
         new GuildChatCommand(this);
 
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            new PlayerJoinListener(this).onJoin(new PlayerJoinEvent(onlinePlayer, Component.text("")));
+            new PlayerJoinListener(this).onJoin(new PlayerJoinEvent(onlinePlayer, Component.empty()));
         }
 
         getServer().getPluginManager().addPermission(new Permission("guildscore.save", PermissionDefault.OP));
         getServer().getPluginManager().addPermission(new Permission("guildscore.load", PermissionDefault.OP));
 
-        getConfig().options().copyDefaults(true);
         HeartUpgrade.loadConfig(this);
     }
 
@@ -99,13 +95,5 @@ public final class GuildsCore extends JavaPlugin {
                     this
             );
         }
-    }
-
-    public static Component getNoPermissionMessage() {
-        return Component.text("Nie masz uprawnień, by to zrobić!").color(NamedTextColor.RED);
-    }
-
-    public static Component loreComponent(Object line) {
-        return MiniMessage.miniMessage().deserialize(line.toString()).decoration(TextDecoration.ITALIC, false);
     }
 }

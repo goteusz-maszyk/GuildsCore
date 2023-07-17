@@ -2,8 +2,12 @@ package me.gotitim.guildscore.placeholders;
 
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+import java.util.Map;
 
 public class GuildPlaceholders extends Placeholders.PlaceholderPlugin {
     private final GuildsCore core;
@@ -17,15 +21,29 @@ public class GuildPlaceholders extends Placeholders.PlaceholderPlugin {
     }
 
     @Override
-    public Object apply(Player player, String parametersString) {
-        Guild guild = core.getGuildManager().getGuild(player);
+    public @NotNull List<String> getAliases() {
+        return List.of("newguild", "targetguild");
+    }
+
+    @Override
+    public Object apply(Player player, @NotNull String alias, @NotNull String parametersString, @NotNull Map<String, Object> placeholderValues) {
+        Guild guild = alias.equals("newguild") && placeholderValues.get("new_guild") instanceof Guild ? (Guild) placeholderValues.get("new_guild") : core.getGuildManager().getGuild(player);
         return switch (parametersString) {
+            case "id" ->
+                guild == null ? "Brak" : guild.getId();
             case "name" ->
-                    guild == null ? "Brak" : guild.getName();
+                guild == null ? "Brak" : guild.getName();
             case "playercount" ->
-                    guild == null ? 0 : guild.getPlayers().size();
+                guild == null ? 0 : guild.getPlayers().size();
             case "bank" ->
-                    guild == null ? 0 : guild.getBank();
+                guild == null ? 0 : guild.getBank();
+            case "color" ->
+                guild == null ? "white" : guild.getColor().toString();
+            case "icon_id" ->
+                guild == null ? Material.COBBLESTONE.key().asString() : guild.getIcon().key().asString();
+            case "icon" ->
+                guild == null ? Material.COBBLESTONE : guild.getIcon();
+
             default -> parametersString;
         };
     }

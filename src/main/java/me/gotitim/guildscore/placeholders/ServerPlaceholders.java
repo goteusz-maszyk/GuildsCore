@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 public class ServerPlaceholders extends Placeholders.PlaceholderPlugin {
     @Override
     public @NotNull String getId() {
@@ -11,7 +13,7 @@ public class ServerPlaceholders extends Placeholders.PlaceholderPlugin {
     }
 
     @Override
-    public Object apply(Player player, String parametersString) {
+    public Object apply(Player player, @NotNull String alias, @NotNull String parametersString, @NotNull Map<String, Object> placeholderValues) {
         return switch (parametersString) {
             case "onlinecount" ->
                     Bukkit.getOnlinePlayers().size();

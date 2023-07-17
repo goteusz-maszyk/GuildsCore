@@ -5,7 +5,6 @@ import me.gotitim.guildscore.commands.guild.CreateSubcommand;
 import me.gotitim.guildscore.commands.guild.JoinSubcommand;
 import me.gotitim.guildscore.commands.guild.TeamDispaySubcommand;
 import me.gotitim.guildscore.guilds.Guild;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,6 +19,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import static me.gotitim.guildscore.util.Components.getNoPermissionMessage;
+import static me.gotitim.guildscore.util.Components.parseRaw;
+
 public class GuildCommand extends Command {
     private final GuildsCore plugin;
 
@@ -27,29 +29,30 @@ public class GuildCommand extends Command {
         super("guild");
         plugin = core;
         setDescription("Guild management command");
-        setAliases(List.of("gildia"));
     }
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) { // args: 0: maincommand, 1, 2...: payload
         if(args.length == 0) {
-            sender.sendMessage("Not enough arguments.");
+            sender.sendMessage(parseRaw("guild_command.args_missing"));
             return false;
         }
 
         if(args[0].equalsIgnoreCase("save")) {
-            if(!sender.hasPermission("guildscore.save")) {sender.sendMessage(GuildsCore.getNoPermissionMessage());return false;}
+            if(!sender.hasPermission("guildscore.save")) {sender.sendMessage(getNoPermissionMessage());return false;}
 
             plugin.getGuildManager().getGuilds().values().forEach(g -> g.getConfig().save());
-            sender.sendMessage(Component.text("Zapisano dane gildii.").color(NamedTextColor.GREEN));
+            plugin.saveConfig();
+            sender.sendMessage(parseRaw("guild_command.data_saved"));
             return true;
         }
 
         if(args[0].equalsIgnoreCase("load")) {
-            if(!sender.hasPermission("guildscore.load")) {sender.sendMessage(GuildsCore.getNoPermissionMessage());return false;}
+            if(!sender.hasPermission("guildscore.load")) {sender.sendMessage(getNoPermissionMessage());return false;}
 
             plugin.getGuildManager().getGuilds().values().forEach(g -> g.getConfig().reload());
-            sender.sendMessage(Component.text("Załadowano dane gildii.").color(NamedTextColor.GREEN));
+            plugin.reloadConfig();
+            sender.sendMessage(parseRaw("guild_command.data_loaded"));
             return true;
         }
 
@@ -79,25 +82,28 @@ public class GuildCommand extends Command {
         }
         return true;
     }
-
-    private void deleteGuild(Player player) {
+    public static Guild guildCheck(GuildsCore plugin, Player player) {
         Guild guild = plugin.getGuildManager().getGuild(player);
         if(guild == null) {
-            player.sendMessage(Component.text("A Co ty w ogóle usuwać chcesz?").color(NamedTextColor.RED));
-            return;
+            player.sendMessage(parseRaw("guild_command.no_guild"));
         }
+        return guild;
+    }
+
+    private void deleteGuild(Player player) {
+        Guild guild = guildCheck(plugin, player);
+        if(guild == null) return;
+
         guild.delete();
-        player.sendMessage(Component.text("Gildia usunięta.").color(NamedTextColor.RED));
+        player.sendMessage(parseRaw("guild_command.deleted"));
     }
 
     private void inviteToGuild(Player player, String[] args) {
-        Guild guild = plugin.getGuildManager().getGuild(player);
-        if(guild == null) {
-            player.sendMessage(Component.text("A do kąd ty chcesz zapraszać jak w gildii nawet nie jesteś?").color(NamedTextColor.RED));
-            return;
-        }
-        if(args.length < 1) {
-            player.sendMessage(Component.text("Użycie: /guild invite <gracz>").color(NamedTextColor.YELLOW));
+        Guild guild = guildCheck(plugin, player);
+        if(guild == null) return;
+
+        if(args.length < 2) {
+            player.sendMessage(parseRaw("guild_command.invite_usage"));
             return;
         }
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
@@ -105,11 +111,9 @@ public class GuildCommand extends Command {
     }
 
     private void leaveGuild(Player player) {
-        Guild guild = plugin.getGuildManager().getGuild(player);
-        if(guild == null) {
-            player.sendMessage(Component.text("A Co ty w ogóle opuszczać chcesz?").color(NamedTextColor.RED));
-            return;
-        }
+        Guild guild = guildCheck(plugin, player);
+        if(guild == null) return;
+
         guild.removePlayer(player);
     }
 

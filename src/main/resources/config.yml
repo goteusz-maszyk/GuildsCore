@@ -1,4 +1,5 @@
 guild_chat_format: "<green>[GuildChat] </green><aqua><%player_name%></aqua> %message%"
+heart_place_range: 384 # 16*24 blocks
 tablist:
   header:
     - "        <gold>»»» GILDIE SOKOWY «««</gold>        "
@@ -71,6 +72,81 @@ items:
   GUILD_HEART:
     slot: 42
     cost: 2000
+
+messages:
+  no_permission: "<red>Nie masz uprawnień, by to zrobić!</red>"
+
+  shop:
+    no_guild: "<red>Nie ma gildii - nie ma sklepu.</red>"
+    title: "Guild shop"
+    cost: "<white>Cost: </white><gold>%upgrade_cost%</gold>"
+    upgrade_name: "<blue>%upgrade_name% %upgrade_level%</blue>"
+    cannot_afford: "<red>Nie stać cię na to.</red>"
+    max_level: "<yellow>Osiągnąłeś maksymalny poziom ulepszenia</yellow>"
+    upgraded: "<green><aqua>%player_name%</aqua> ulepszył %upgrade_name% do poziomu %upgrade_level%</green>"
+    bought: "<green><aqua>%player_name%</aqua> zakupił na własny użytek %hover_item%</green>"
+  bank:
+    no_guild: "<red>Nie ma gildii - nie ma banku.</red>"
+    title: "Guild bank"
+    tooltip_value: "<white>Value: </white><gold>%value%</gold>"
+    tooltip_lmb: "<green>Left-Click to sell one</green>"
+    tooltip_rmb: "<green>Right-Click to sell all</green>"
+    material_absent: "<red>Nie masz tego materiału.</red>"
+    deposit: "<aqua>%player_name%</aqua> <green>wpłacił do banku</green> <gold>%amount%</gold>"
+  guild:
+    tooltip_members: "<green>Members: </green>"
+    tooltip_bank: "<white>Bank gildii: </white><gold>%guild_bank%</gold>"
+    chat_enabled: "<green>Włączono czat gildii</green>"
+    chat_disabled: "<red>Wyłączono czat gildii</red>"
+    chat_unavailable: "<red>Nie jesteś w gildii, więc nie możesz pisać na czacie gildii.</red>"
+  compass:
+    name: "<aqua>Guild Compass</aqua>"
+    tooltip_1: "<dark_green>Always points towards selected guild's heart</dark_green>"
+    tooltip_2: "Selected guild: %guild%"
+    title: "Select guild to track:"
+    set_guild: "<green>Ustawiono gildię na</green> <gold>%guild%</gold>"
+  guild_command:
+    args_missing: "<red>Not enough arguments.</red>"
+    data_saved: "<green>Zapisano dane gildii.</green>"
+    data_loaded: "<green>Załadowano dane gildii.</green>"
+    no_guild: "<red>Nic tu nie zdziałasz, bo w gildii nie jesteś.</red>"
+    create_in_guild: "<red>Nie możesz utworzyć gildii, gdy jesteś już w jakiejś!</red>"
+    create_args_missing: "<red>Podaj unikalne ID i nazwę dla twojej gildii!</red>"
+    id_in_use: "<red>Gildia o podanym ID już istnieje</red>"
+    created: "<green>Utworzyłeś gildię</green> <gold>%guild_id% (%guild_name%)</gold>"
+    deleted: "<green>Gildia usunięta.</green>"
+    invite_usage: "<yellow>Użycie: /guild invite <gracz></yellow>"
+    presuffix_set: "<green>%presuffix% gildii ustawiony na </green><dark_aqua>%value%</dark_aqua>"
+    unknown_color: "<red>Nieznany kolor: %color%</red>"
+    color_reset: "<green>Kolor gildii zresetowany</green>"
+    color_set: "<green>Kolor gildii ustawiony na</green> <%guild_color%>%guild_color%</%guild_color%>"
+    name_set: "<green>Ustawiono nazwę gildii na</green> <gold>%guild_name%</gold>"
+    icon_reset: "<green>Ikona gildii zresetowana</green>"
+    unknown_material: "<red>Podaj prawidłową nazwę przedmiotu</red>"
+    icon_set: "<green>Ikona gildii ustawiona na <hover:show_item:'%guild_icon_id%'>%guild_icon%</hover></green>"
+    leave_notification: "<green>Gracz <aqua>%player_name%</aqua> opuszcza gildię!</green>"
+  join:
+    id_missing: "<red>Podaj ID gildii, do której chcesz dołączyć!</red>"
+    unknown_guild: "<red>Nie znaleziono gildii.</red>"
+    already_joined: "<yellow>Jesteś już członkiem gidii <gold>%guild_name%</gold></yellow>"
+    already_in_guild: "<yellow>Jesteś już członkiem gidii <gold>%guild_name%</gold>. By dołączyć do <gold>%newguild_name%</gold>, musisz najpierw opuścić obecną. (/guild leave)</yellow>"
+    no_invite: "<red>Nie masz zaproszenia do gildii <gold>%newguild_name%</gold>.</red>"
+    notification: "<green>Gracz <aqua>%player_name%</aqua> dołączył do gildii!</green>"
+    invite_notification: "<aqua>%inviter_name%</aqua><green> zaprosił gracza <aqua>%player_name%</aqua> do gildii!</green>"
+    invited_no_inviter: "<green>Zostałeś zaproszony do gidii <gold>%newguild_name%</gold>. <blue><click:run_command:'/guild join %newguild_id%'>KLIKNIJ TUTAJ BY DOŁĄCZYĆ</click></blue></green>"
+    invited_inviter: "<green>Zostałeś zaproszony przez <aqua>%inviter_name%</aqua> do gidii <gold>%newguild_name%</gold>. <blue><click:run_command:'/guild join %newguild_id%'>KLIKNIJ TUTAJ BY DOŁĄCZYĆ</click></blue></green>"
+  heart:
+    place: "<green>Gracz <aqua>%player_name%</aqua> postawił serce gildii!</green>"
+    pickup: "<green>Gracz <aqua>%player_name%</aqua> podniósł serce gildii!</green>"
+    destroy: "<dark_green>Serce gildii <gold>%targetguild_name%</gold> zostało zniszczone przez <aqua>%player_name%</aqua>!</dark_green>"
+    entered_warning: "<aqua>%player_name%</aqua> <red>wszedł na teren gildii!</red>"
+    container_locked: "<red>Nie możesz otwierać tu kontenerów</red>"
+    chest_unbreakable: "<red>Nie możesz niszczyć tu skrzyń</red>"
+    already_placed: "<red>Nie możesz postawić serca, gdy już jest jakieś postawione!</red>"
+    placed_too_near: "<red>Nie możesz postawić serca, gdy w promieniu 24 chunków jest inna gildia!</red>"
+    item_name: "<aqua>Guild Heart</aqua>"
+    cannot_place_blocks: "<red>Nie możesz stawiać tu bloków</red>"
+
 # Coloring standard:
 # Gold - guild
 # Green - success notification
