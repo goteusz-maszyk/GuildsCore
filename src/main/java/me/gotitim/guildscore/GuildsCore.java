@@ -45,6 +45,7 @@ public final class GuildsCore extends JavaPlugin {
             }
         }
         getConfig().options().copyDefaults(true);
+        saveDefaultConfig();
         this.guildManager.init();
         Components.setCore(this);
 

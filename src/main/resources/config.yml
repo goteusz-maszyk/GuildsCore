@@ -151,7 +151,7 @@ messages:
     placed_too_near: "<red>Nie możesz postawić serca, gdy w promieniu 24 chunków jest inna gildia!</red>"
     item_name: "<aqua>Guild Heart</aqua>"
     cannot_place_blocks: "<red>Nie możesz stawiać tu bloków</red>"
-
+    nobody_online: "<red>Serce można zniszczyć tylko wtedy, gdy ktoś z gildii przeciwnej jest online.</red>"
 # Coloring standard:
 # Gold - guild
 # Green - success notification

@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static me.gotitim.guildscore.listener.HeartListener.resetTasks;
 import static me.gotitim.guildscore.util.Components.*;
 
 public class Guild {
@@ -146,6 +147,7 @@ public class Guild {
             player.sendMessage(parseRaw("join.no_invite", ph.setValue("new_guild", this)));
             return;
         }
+        resetTasks(player);
 
         invites.remove(player.getUniqueId());
         players.add(player.getUniqueId());
@@ -157,6 +159,7 @@ public class Guild {
 
     public void removePlayer(Player player) {
         broadcast(parseRaw("guild_command.leave_notification", new Placeholders(player)), true);
+        resetTasks(player);
 
         players.remove(player.getUniqueId());
         bukkitTeam.removePlayer(player);
@@ -283,5 +286,13 @@ public class Guild {
 
     public NamedTextColor getColor() {
         return color;
+    }
+
+    public List<Player> getOnlinePlayers() {
+        List<Player> online = new ArrayList<>();
+        for (UUID player : players) {
+            if(Bukkit.getPlayer(player) != null) online.add(Bukkit.getPlayer(player));
+        }
+        return online;
     }
 }

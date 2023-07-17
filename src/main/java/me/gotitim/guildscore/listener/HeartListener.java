@@ -31,12 +31,12 @@ import static me.gotitim.guildscore.util.Components.parseRaw;
 
 public final class HeartListener implements Listener {
     private final GuildsCore plugin;
-    private final Map<UUID, BukkitTask> fatigueTasks = new HashMap<>();
-    private final Map<UUID, BukkitTask> regenTasks = new HashMap<>();
+    private static final Map<UUID, BukkitTask> fatigueTasks = new HashMap<>();
+    private static final Map<UUID, BukkitTask> regenTasks = new HashMap<>();
 
-    private final Map<UUID, Guild> normalAffectedPlayers = new HashMap<>();
-    private final Map<UUID, Guild> warningPlayers = new HashMap<>();
-    private final Map<UUID, Guild> healedPlayers = new HashMap<>();
+    private static final Map<UUID, Guild> normalAffectedPlayers = new HashMap<>();
+    private static final Map<UUID, Guild> warningPlayers = new HashMap<>();
+    private static final Map<UUID, Guild> healedPlayers = new HashMap<>();
 
     public HeartListener(GuildsCore plugin) {
         this.plugin = plugin;
@@ -141,7 +141,7 @@ public final class HeartListener implements Listener {
 
         if(containerTypes.contains(block.getType())) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(parseRaw("container_locked"));
+            event.getPlayer().sendMessage(parseRaw("heart.container_locked"));
         }
     }
 
@@ -215,5 +215,12 @@ public final class HeartListener implements Listener {
         double deltaX = Math.abs(loc2.getX() - loc1.getX());
         double deltaZ = Math.abs(loc2.getZ() - loc1.getZ());
         return Math.sqrt(deltaX*deltaX + deltaZ*deltaZ);
+    }
+    public static void resetTasks(Player player) {
+        try{fatigueTasks.remove(player.getUniqueId()).cancel();} catch (NullPointerException ignored) {}
+        try{regenTasks.remove(player.getUniqueId()).cancel();} catch (NullPointerException ignored) {}
+        healedPlayers.remove(player.getUniqueId());
+        warningPlayers.remove(player.getUniqueId());
+        normalAffectedPlayers.remove(player.getUniqueId());
     }
 }

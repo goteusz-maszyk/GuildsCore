@@ -17,6 +17,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
 
+import static me.gotitim.guildscore.listener.HeartListener.resetTasks;
+
 public final class PlayerJoinListener implements Listener {
     private final GuildsCore plugin;
     private final Map<UUID, BukkitTask> tablistTasks = new HashMap<>();
@@ -47,6 +49,7 @@ public final class PlayerJoinListener implements Listener {
         }
         BukkitTask task = tablistTasks.remove(event.getPlayer().getUniqueId());
         if(task != null) task.cancel();
+        resetTasks(event.getPlayer());
     }
 
     private void updatePlayerTablist(Player player) {

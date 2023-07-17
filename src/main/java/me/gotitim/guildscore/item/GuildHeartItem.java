@@ -45,6 +45,7 @@ public class GuildHeartItem extends ItemBuilder {
         if(event.getItem().getType() != Material.END_CRYSTAL) return;
         Guild guild = core.getGuildManager().getGuild(event.getPlayer());
         if(guild == null) {
+            event.setCancelled(true);
             event.getPlayer().sendMessage(parseRaw("guild_command.no_guild"));
             return;
         }

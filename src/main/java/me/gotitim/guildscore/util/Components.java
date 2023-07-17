@@ -10,6 +10,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class Components {
     private static GuildsCore core;
@@ -34,12 +35,16 @@ public class Components {
         return loreComponent(ph.apply(getRaw(key)));
     }
 
-    public static Component parseMiniMessage(String text) {
+    public static Component parseMiniMessage(@NotNull String text) {
         return MiniMessage.miniMessage().deserialize(text);
     }
 
-    public static String getRaw(String key) {
-        return core.getConfig().getString("messages." + key);
+    public static @NotNull String getRaw(@NotNull String key) {
+        String res = core.getConfig().getString("messages." + key);
+        if(res.equals(key)) {
+            core.getLogger().warning("MESSAGE NOT FOUND: " + key);
+        }
+        return res;
     }
 
     public static Component parseRaw(String key) {

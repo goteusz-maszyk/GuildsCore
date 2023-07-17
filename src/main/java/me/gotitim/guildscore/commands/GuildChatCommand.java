@@ -28,8 +28,8 @@ public class GuildChatCommand extends Command {
 
         if(args.length == 0) {
             if(toggleGuildChat(player))
-                player.sendMessage(parseRaw("guilds.chat_enabled"));
-            else player.sendMessage(parseRaw("guilds.chat_disabled"));
+                player.sendMessage(parseRaw("guild.chat_enabled"));
+            else player.sendMessage(parseRaw("guild.chat_disabled"));
             return true;
         }
         Guild guild = plugin.getGuildManager().getGuild(player);
@@ -42,7 +42,7 @@ public class GuildChatCommand extends Command {
         ph.set("message", message);
         ph.setPlayer(player);
         guild.broadcast(parseMiniMessage(ph.apply(plugin.getConfig().getString("guild_chat_format"))), false);
-        if(!guildChatEnabled(player)) player.sendMessage(parseRaw("guilds.chat_enabled"));
+        if(!guildChatEnabled(player)) player.sendMessage(parseRaw("guild.chat_enabled"));
         enableGuildChat(player);
         return true;
     }

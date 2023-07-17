@@ -27,7 +27,14 @@ public class GuildPlaceholders extends Placeholders.PlaceholderPlugin {
 
     @Override
     public Object apply(Player player, @NotNull String alias, @NotNull String parametersString, @NotNull Map<String, Object> placeholderValues) {
-        Guild guild = alias.equals("newguild") && placeholderValues.get("new_guild") instanceof Guild ? (Guild) placeholderValues.get("new_guild") : core.getGuildManager().getGuild(player);
+        Guild guild;
+        if (alias.equals("newguild") && placeholderValues.get("new_guild") instanceof Guild) {
+            guild = (Guild) placeholderValues.get("new_guild");
+        } else if(alias.equals("targetguild") && placeholderValues.get("targetguild") instanceof Guild) {
+            guild = (Guild) placeholderValues.get("targetguild");
+        } else {
+            guild = core.getGuildManager().getGuild(player);
+        }
         return switch (parametersString) {
             case "id" ->
                 guild == null ? "Brak" : guild.getId();

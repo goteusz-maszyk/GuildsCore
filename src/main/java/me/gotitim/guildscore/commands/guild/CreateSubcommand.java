@@ -13,18 +13,18 @@ public class CreateSubcommand {
     public static void createGuild(Player player, String[] args, GuildsCore plugin) {
         Placeholders ph = new Placeholders(player);
         if(plugin.getGuildManager().getGuild(player) != null) {
-            player.sendMessage(parseRaw("create_in_guild"));
+            player.sendMessage(parseRaw("guild_command.create_in_guild"));
             return;
         }
         if(args.length < 3) {
-            player.sendMessage(parseRaw("create_args_missing"));
+            player.sendMessage(parseRaw("guild_command.create_args_missing"));
             return;
         }
 
         try {
             plugin.getGuildManager().createGuild(args[1], String.join(" ", (Arrays.copyOfRange(args, 2, args.length))), player);
         } catch(IllegalStateException e) {
-            player.sendMessage(parseRaw("id_in_use", ph));
+            player.sendMessage(parseRaw("guild_command.id_in_use", ph));
             return;
         }
         Component message = parseRaw("guild_command.created", ph);

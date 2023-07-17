@@ -29,15 +29,21 @@ public final class HitListener implements Listener {
         e.setCancelled(true);
         if (!(e.getDamager() instanceof Player player)) return;
 
-        e.getEntity().remove();
-        guild.getHeart().pickup();
-
         if(guild.getPlayers().contains(player.getUniqueId())) {
+            e.getEntity().remove();
+            guild.getHeart().pickup();
             player.getInventory().addItem(new GuildHeartItem(plugin).toItemStack());
             guild.broadcast(parseRaw("heart.pickup", new Placeholders(player)),
                     true);
             return;
         }
-        Bukkit.broadcast(parseRaw("heart.destroy", new Placeholders(player)));
+        if(guild.getOnlinePlayers().size() > 0) {
+            player.getWorld().strikeLightningEffect(e.getEntity().getLocation());
+            e.getEntity().remove();
+            guild.getHeart().pickup();
+            Bukkit.broadcast(parseRaw("heart.destroy", new Placeholders(player).setValue("targetguild", guild)));
+        } else {
+            player.sendMessage(parseRaw("heart.nobody_online", new Placeholders(player)));
+        }
     }
 }
