@@ -1,6 +1,7 @@
 package me.gotitim.guildscore;
 
 import me.gotitim.guildscore.commands.*;
+import me.gotitim.guildscore.guilds.Guild;
 import me.gotitim.guildscore.guilds.GuildManager;
 import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.listener.*;
@@ -80,6 +81,7 @@ public final class GuildsCore extends JavaPlugin {
     public void onDisable() {
         Placeholders.clearPlugins();
         guildManager.saveAll();
+        Guild.BANK_MATERIALS.clear();
     }
 
     public GuildManager getGuildManager() {

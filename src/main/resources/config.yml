@@ -9,6 +9,11 @@ tablist:
     - "        <blue>Ping: %player_ping%ms</blue> | <green>GRACZY ONLINE: %server_onlinecount%</green>        "
     - "<gold>Gildia: %guild_name%</gold>"
     - "<white>Bank: </white><gold>%guild_bank%</gold>"
+bank_materials:
+  IRON_INGOT: 1
+  GOLD_INGOT: 2
+  DIAMOND: 20
+  EMERALD: 5
 upgrades:
   WORKING_RADIUS:
     name: "Working radius"

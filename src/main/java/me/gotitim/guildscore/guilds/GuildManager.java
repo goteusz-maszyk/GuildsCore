@@ -51,8 +51,12 @@ public class GuildManager {
             gc.setGuild(guild);
         }
 
-        Guild.BANK_MATERIALS.put(Material.IRON_INGOT, 1);
-        Guild.BANK_MATERIALS.put(Material.GOLD_INGOT, 2);
+        for (String id : plugin.getConfig().getConfigurationSection("bank_materials").getKeys(false)) {
+            Material material = Material.getMaterial(id);
+
+            if (material == null) plugin.getLogger().warning("Found unknown material in bank_materials config: " + id);
+            else Guild.BANK_MATERIALS.put(material, plugin.getConfig().getInt("bank_materials." + id));
+        }
     }
 
     public @NotNull Team getOrCreateTeam(@NotNull String name) {
