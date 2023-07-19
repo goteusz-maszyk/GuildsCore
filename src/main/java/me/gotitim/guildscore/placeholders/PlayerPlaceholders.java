@@ -15,12 +15,19 @@ public class PlayerPlaceholders extends Placeholders.PlaceholderPlugin {
 
     @Override
     public @NotNull List<String> getAliases() {
-        return List.of("inviter");
+        return List.of("inviter", "targetplayer");
     }
 
     @Override
     public Object apply(Player p, @NotNull String alias, @NotNull String parametersString, @NotNull Map<String, Object> placeholderValues) {
-        OfflinePlayer offlinePlayer = alias.equals("inviter") && placeholderValues.get("inviter") instanceof OfflinePlayer ? (OfflinePlayer) placeholderValues.get("inviter") : p;
+        OfflinePlayer offlinePlayer;
+        if (alias.equals("inviter") && placeholderValues.get("inviter") instanceof OfflinePlayer ip) {
+            offlinePlayer = ip;
+        } else if (alias.equals("targetplayer") && placeholderValues.get("targetplayer") instanceof OfflinePlayer tp) {
+            offlinePlayer = tp;
+        } else {
+            offlinePlayer = p;
+        }
         Player player = offlinePlayer.getPlayer();
         return switch (parametersString) {
             case "name" ->

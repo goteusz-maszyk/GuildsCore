@@ -14,6 +14,7 @@ bank_materials:
   GOLD_INGOT: 2
   DIAMOND: 20
   EMERALD: 5
+  NETHERITE_SCRAP: 50
 upgrades:
   WORKING_RADIUS:
     name: "Working radius"
@@ -78,9 +79,32 @@ items:
     slot: 42
     cost: 2000
 
+tpa_delay: 5
+tpa_cost: 10
+back_cost: 20
 messages:
   no_permission: "<red>Nie masz uprawnień, by to zrobić!</red>"
-
+  tpa:
+    usage: "<yellow>Użycie: /%command% <gracz></yellow>"
+    no_target: "<red>Nie znaleziono gracza.</red>"
+    target_yourself: "<yellow>Nie możesz teleportować się do siebie.</yellow>"
+    already_requested: "<yellow>Już wysłałeś TPA. Możesz je anulować <blue><click:run_command:'/tpcancel %targetplayer_name%'>/tpcancel %targetplayer_name%</click></blue></yellow>"
+    timeout: "<yellow>Upłynął limit czasu twojego TPA!</yellow>"
+    received_tp_request: "<gold><aqua>%player_name%</aqua> wysłał do ciebie TPA. <green><click:run_command:'/tpaccept %player_name%'>AKCEPTUJ</click></green> | <red><click:run_command:'/tpdeny %player_name%'>ODRZUĆ</click></red></gold>"
+    sending_tp_request: "<green>Wysyłanie TPA do <aqua>%targetplayer_name%</aqua>. Możesz je anulować </green><blue><click:run_command:'/tpcancel %targetplayer_name%'>/tpcancel %targetplayer_name%</click></blue>"
+    cancelled: "<green>TPA anulowane.</green>"
+    no_request: "<red>Nie masz żadnych oczekujących TPA.</red>"
+    tp_start: "<green>Teleportuję w ciągu 5 sekund... Nie ruszaj się.</green>"
+    accepted_sender: "<aqua>%player_name%</aqua> <green>zaakceptował twoje TPA.</green>"
+    accepted_player: "<green>Zaakceptowałeś TPA.</green>"
+    rejected_sender: "<green>Twoje TPA zostało odrzucone!</green>"
+    rejected_player: "<green>Odrzuciłeś TPA!</green>"
+    no_back: "<red>Nie masz gdzie się cofać.</red>"
+    death: "<yellow>ZDECHŁEŚ na X: %player_x% Y: %player_y% Z: %player_z%! Możesz się cofnąć za pomocą /back, jednak kosztuje to <gold>20</gold> banku</yellow>"
+    moved: "<red>Ruszyłeś się, nic cię to nie kosztuje, ale nie będzie teleportu.</red>"
+    guild_required: "<red>Do TPA potrzebujesz banku gildii.</red>"
+    cannot_afford: "<red>Nie stać cię na to. Koszt TPA: <gold>10</gold>; Koszt /back: <gold>20</gold></red>"
+    broadcast: "<aqua>%player_name%</aqua><green> użył teleportu, kosztowało go to</green> <gold>%cost%</gold>"
   shop:
     no_guild: "<red>Nie ma gildii - nie ma sklepu.</red>"
     title: "Guild shop"

@@ -1,12 +1,16 @@
 package me.gotitim.guildscore;
 
-import me.gotitim.guildscore.commands.*;
+import me.gotitim.guildscore.commands.BankCommand;
+import me.gotitim.guildscore.commands.GuildChatCommand;
+import me.gotitim.guildscore.commands.GuildCommand;
+import me.gotitim.guildscore.commands.ShopCommand;
 import me.gotitim.guildscore.guilds.Guild;
 import me.gotitim.guildscore.guilds.GuildManager;
 import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.listener.*;
 import me.gotitim.guildscore.placeholders.*;
 import me.gotitim.guildscore.util.Components;
+import me.gotitim.guildscore.util.TPAStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -29,9 +33,11 @@ public final class GuildsCore extends JavaPlugin {
     private final GuildManager guildManager;
     public final NamespacedKey itemIdKey = new NamespacedKey(this, "customitem");
     public final NamespacedKey guildIdKey = new NamespacedKey(this, "guildId");
+    public final TPAStorage tpaStorage;
 
     public GuildsCore() {
         this.guildManager = new GuildManager(this);
+        this.tpaStorage = new TPAStorage(this);
     }
 
     @Override
@@ -55,7 +61,8 @@ public final class GuildsCore extends JavaPlugin {
                 PlayerJoinListener.class,
                 ChatListener.class,
                 HitListener.class,
-                HeartListener.class); } catch (Exception ignored) {}
+                HeartListener.class,
+                TpaListener.class); } catch (Exception ignored) {}
 
         new ServerPlaceholders().register();
         new PlayerPlaceholders().register();
@@ -75,6 +82,7 @@ public final class GuildsCore extends JavaPlugin {
         getServer().getPluginManager().addPermission(new Permission("guildscore.load", PermissionDefault.OP));
 
         HeartUpgrade.loadConfig(this);
+        this.tpaStorage.loadCommands();
     }
 
 
