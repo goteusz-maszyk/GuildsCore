@@ -1,6 +1,7 @@
 package me.gotitim.guildscore.listener;
 
 import com.destroystokyo.paper.event.block.BlockDestroyEvent;
+import io.papermc.paper.event.player.PlayerItemFrameChangeEvent;
 import io.papermc.paper.event.player.PrePlayerAttackEntityEvent;
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.util.region.StretchedCuboidRegion;
@@ -15,8 +16,10 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleEntityCollisionEvent;
 import org.jetbrains.annotations.NotNull;
@@ -139,6 +142,21 @@ public class CommonSpawnListener implements Listener {
     }
     @EventHandler
     public void onPush(VehicleEntityCollisionEvent event) {
+        if(!spawn.contains(event.getEntity().getLocation())) return;
+        event.setCancelled(true);
+    }
+    @EventHandler
+    public void onItemFrame(PlayerItemFrameChangeEvent event) {
+        if(!spawn.contains(event.getItemFrame().getLocation())) return;
+        event.setCancelled(true);
+    }
+    @EventHandler
+    public void onArmorStand(PlayerInteractAtEntityEvent event) {
+        if(!spawn.contains(event.getRightClicked().getLocation())) return;
+        event.setCancelled(true);
+    }
+    @EventHandler
+    public void onDamage(EntityDamageByEntityEvent event) {
         if(!spawn.contains(event.getEntity().getLocation())) return;
         event.setCancelled(true);
     }
