@@ -82,9 +82,9 @@ public class GuildManager {
     }
 
     public Guild createGuild(@NotNull String name, @NotNull Player player) throws IllegalStateException {
-        String guildId = name.toLowerCase();
+        String guildId = name.toLowerCase().replaceAll(" ", "_");
         if (guilds.containsKey(guildId)) {
-            guildId = guildId.replaceAll(" ", "_");
+            guildId = guildId.replaceAll("_", "");
             if (guilds.containsKey(guildId)) throw new IllegalStateException("Couldn't create guild ID for name " + name);
         }
 
