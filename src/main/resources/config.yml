@@ -15,6 +15,12 @@ bank_materials:
   DIAMOND: 20
   EMERALD: 5
   NETHERITE_SCRAP: 50
+spawn: # some random coordinates I use for testing, you should put yours!
+  world: world
+  x1: -36
+  z1: 210
+  x2: 0
+  z2: 241
 upgrades:
   WORKING_RADIUS:
     name: "Working radius"

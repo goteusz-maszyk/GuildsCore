@@ -36,11 +36,11 @@ public class PlayerPlaceholders extends Placeholders.PlaceholderPlugin {
                 offlinePlayer.getUniqueId();
 
             case "x" ->
-                player == null ? null : player.getLocation().getX();
+                player == null ? null : (int) player.getLocation().getX();
             case "y" ->
-                    player == null ? null : player.getLocation().getY();
+                    player == null ? null : (int) player.getLocation().getY();
             case "z" ->
-                    player == null ? null : player.getLocation().getZ();
+                    player == null ? null : (int) player.getLocation().getZ();
 
             case "ping" ->
                     player == null ? null : player.getPing();

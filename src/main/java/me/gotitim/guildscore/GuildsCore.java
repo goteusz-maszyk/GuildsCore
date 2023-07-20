@@ -62,7 +62,8 @@ public final class GuildsCore extends JavaPlugin {
                 ChatListener.class,
                 HitListener.class,
                 HeartListener.class,
-                TpaListener.class); } catch (Exception ignored) {}
+                TpaListener.class,
+                CommonSpawnListener.class); } catch (Exception ignored) {}
 
         new ServerPlaceholders().register();
         new PlayerPlaceholders().register();
