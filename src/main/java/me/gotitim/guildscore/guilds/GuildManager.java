@@ -81,8 +81,12 @@ public class GuildManager {
         return getGuild((OfflinePlayer) player);
     }
 
-    public Guild createGuild(String guildId, String name, Player player) throws IllegalStateException {
-        if (guilds.containsKey(guildId)) throw new IllegalStateException("Guild ID already in use!");
+    public Guild createGuild(@NotNull String name, @NotNull Player player) throws IllegalStateException {
+        String guildId = name.toLowerCase();
+        if (guilds.containsKey(guildId)) {
+            guildId = guildId.replaceAll(" ", "_");
+            if (guilds.containsKey(guildId)) throw new IllegalStateException("Couldn't create guild ID for name " + name);
+        }
 
         Guild guild = new Guild(guildId, name, player, this);
         guilds.put(guildId, guild);

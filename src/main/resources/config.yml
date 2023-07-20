@@ -146,7 +146,7 @@ messages:
     data_loaded: "<green>Załadowano dane gildii.</green>"
     no_guild: "<red>Nic tu nie zdziałasz, bo w gildii nie jesteś.</red>"
     create_in_guild: "<red>Nie możesz utworzyć gildii, gdy jesteś już w jakiejś!</red>"
-    create_args_missing: "<red>Podaj unikalne ID i nazwę dla twojej gildii!</red>"
+    create_args_missing: "<red>Podaj nazwę dla twojej gildii!</red>"
     id_in_use: "<red>Gildia o podanym ID już istnieje</red>"
     created: "<green>Utworzyłeś gildię</green> <gold>%guild_id% (%guild_name%)</gold>"
     deleted: "<green>Gildia usunięta.</green>"

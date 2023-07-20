@@ -16,13 +16,13 @@ public class CreateSubcommand {
             player.sendMessage(parseRaw("guild_command.create_in_guild"));
             return;
         }
-        if(args.length < 3) {
+        if(args.length < 2) {
             player.sendMessage(parseRaw("guild_command.create_args_missing"));
             return;
         }
 
         try {
-            plugin.getGuildManager().createGuild(args[1], String.join(" ", (Arrays.copyOfRange(args, 2, args.length))), player);
+            plugin.getGuildManager().createGuild(String.join(" ", (Arrays.copyOfRange(args, 1, args.length))), player);
         } catch(IllegalStateException e) {
             player.sendMessage(parseRaw("guild_command.id_in_use", ph));
             return;
