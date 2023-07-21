@@ -37,6 +37,10 @@ public final class HitListener implements Listener {
                     true);
             return;
         }
+        if(!plugin.getConfig().getBoolean("allow_heart_destroy")) {
+            player.sendMessage(parseRaw("heart.destroy_disabled"));
+            return;
+        }
         if(guild.getOnlinePlayers().size() > 0) {
             player.getWorld().strikeLightningEffect(e.getEntity().getLocation());
             e.getEntity().remove();

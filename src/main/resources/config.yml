@@ -1,5 +1,6 @@
 guild_chat_format: "<green>[GuildChat] </green><aqua><%player_name%></aqua> %message%"
 heart_place_range: 384 # 16*24 blocks
+allow_heart_destroy: true
 tablist:
   header:
     - "        <gold>»»» GILDIE SOKOWY «««</gold>        "
@@ -183,6 +184,7 @@ messages:
     item_name: "<aqua>Guild Heart</aqua>"
     cannot_place_blocks: "<red>Nie możesz stawiać tu bloków</red>"
     nobody_online: "<red>Serce można zniszczyć tylko wtedy, gdy ktoś z gildii przeciwnej jest online.</red>"
+    destroy_disabled: "<red>Niszczenie serc jest jeszcze niedostępe!</red>"
 # Coloring standard:
 # Gold - guild
 # Green - success notification
