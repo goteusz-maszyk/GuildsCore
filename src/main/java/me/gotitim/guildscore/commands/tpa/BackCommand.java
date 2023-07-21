@@ -44,6 +44,13 @@ public class BackCommand extends Command {
                     player.sendMessage(parseRaw("tpa.cannot_afford"));
                     return true;
                 }
+                for (Guild g : plugin.getGuildManager().getGuilds().values()) {
+                    if(g.getPlayers().contains(player.getUniqueId())) continue;
+                    if(g.getHeart().affects(player.getLocation())){
+                        sender.sendMessage(parseRaw("tpa.heart_affected", new Placeholders(player).setValue("targetguild", g)));
+                        return true;
+                    }
+                }
                 if (delay == 0) {
                     guild.bankWithdraw(backCost);
                     guild.broadcast(parseRaw("tpa.broadcast", new Placeholders(player).set("cost", backCost)), false);
@@ -66,6 +73,11 @@ public class BackCommand extends Command {
                         if(nowGuild.getBank() < backCost) {
                             player.sendMessage(parseRaw("tpa.cannot_afford"));
                             return;
+                        }
+                        for (Guild g : plugin.getGuildManager().getGuilds().values()) {
+                            if(g.getPlayers().contains(player.getUniqueId())) continue;
+                            if(g.getHeart().affects(player.getLocation()))
+                                return;
                         }
 
                         guild.bankWithdraw(backCost);

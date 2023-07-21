@@ -39,9 +39,6 @@ public class TpcancelCommand extends Command {
         if (plugin.tpaStorage.tpaRequest.containsKey(target.getUniqueId()) && plugin.tpaStorage.tpaRequest.get(target.getUniqueId()).equals(player.getUniqueId())) {
             player.sendMessage(parseRaw("tpa.cancelled"));
             this.plugin.tpaStorage.tpaRequest.remove(target.getUniqueId());
-        } else if (this.plugin.tpaStorage.tpaHereRequest.containsKey(target.getUniqueId()) && this.plugin.tpaStorage.tpaHereRequest.get(target.getUniqueId()).equals(player.getUniqueId())) {
-            player.sendMessage(parseRaw("tpa.cancelled"));
-            this.plugin.tpaStorage.tpaHereRequest.remove(target.getUniqueId());
         } else {
             player.sendMessage(parseRaw("tpa.no_request"));
         }

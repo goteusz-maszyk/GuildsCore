@@ -19,7 +19,6 @@ public class TPAStorage {
     GuildsCore plugin;
     public Map<UUID, Location> backCommandLocation = new HashMap<>();
     public Map<UUID, Location> locationBackPlayers = new HashMap<>();
-    public Map<UUID, UUID> tpaHereRequest = new HashMap<>();
     public Map<UUID, UUID> tpaRequest = new HashMap<>();
 
     public TPAStorage(GuildsCore plugin) {
@@ -33,6 +32,7 @@ public class TPAStorage {
 
             if (player != null) player.sendMessage(parseRaw("tpa.timeout"));
         }
+
     }
 
     public void sendRequest(Player sender, Player receiver) {
@@ -44,6 +44,13 @@ public class TPAStorage {
         if(guild.getBank() < plugin.getConfig().getInt("tpa_cost")) {
             sender.sendMessage(parseRaw("tpa.cannot_afford"));
             return;
+        }
+        for (Guild g : plugin.getGuildManager().getGuilds().values()) {
+            if(g.getPlayers().contains(sender.getUniqueId())) continue;
+            if(g.getHeart().affects(sender.getLocation())) {
+                sender.sendMessage(parseRaw("tpa.heart_affected", new Placeholders(sender).setValue("targetguild", g)));
+                return;
+            }
         }
         sender.sendMessage(parseRaw("tpa.sending_tp_request", new Placeholders(sender).setValue("targetplayer", receiver)));
 

@@ -3,7 +3,9 @@ package me.gotitim.guildscore.commands.tpa;
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.commands.Command;
 import me.gotitim.guildscore.guilds.Guild;
+import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.placeholders.Placeholders;
+import me.gotitim.guildscore.util.Locations;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -51,6 +53,11 @@ public class TpacceptCommand extends Command {
                         theSender.sendMessage(parseRaw("tpa.cannot_afford"));
                         return;
                     }
+                    for (Guild g : plugin.getGuildManager().getGuilds().values()) {
+                        if(g.getPlayers().contains(theSender.getUniqueId())) continue;
+                        if(Locations.distanceHorizontal(g.getHeart().getLocation(), theSender.getLocation()) <= g.getHeart().getUpgrade(HeartUpgrade.WORKING_RADIUS) * 16)
+                            return;
+                    }
                     guild.bankWithdraw(tpaCost);
                     guild.broadcast(parseRaw("tpa.broadcast", new Placeholders(theSender).set("cost", tpaCost)), false);
 
@@ -62,33 +69,6 @@ public class TpacceptCommand extends Command {
                 this.plugin.tpaStorage.tpaRequest.remove(player.getUniqueId());
 
             }, delay * 20L);
-        } else if (this.plugin.tpaStorage.tpaHereRequest.containsKey(player.getUniqueId())) {
-            theSender = Bukkit.getPlayer(this.plugin.tpaStorage.tpaHereRequest.get(player.getUniqueId()));
-            if (theSender == null) {
-                this.plugin.tpaStorage.tpaHereRequest.remove(player.getUniqueId());
-                return true;
-            }
-            delay = this.plugin.getConfig().getInt("tpa_delay");
-
-            Placeholders ph = new Placeholders(theSender);
-            if (delay != 0) player.sendMessage(parseRaw("tpa.tp_start", ph));
-
-            theSender.sendMessage(parseRaw("tpa.accepted_sender", ph));
-            player.sendMessage(parseRaw("tpa.accepted_player", ph));
-
-            this.plugin.tpaStorage.locationPlayers.put(player.getUniqueId(), player.getLocation());
-            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this.plugin, () -> {
-                if (this.plugin.tpaStorage.locationPlayers.containsKey(player.getUniqueId()) && this.plugin.tpaStorage.tpaHereRequest.containsKey(player.getUniqueId())) {
-                    this.plugin.tpaStorage.backCommandLocation.put(player.getUniqueId(), player.getLocation());
-
-                    player.teleport(theSender);
-                }
-                this.plugin.tpaStorage.locationPlayers.remove(player.getUniqueId());
-                this.plugin.tpaStorage.tpaHereRequest.remove(player.getUniqueId());
-
-            }, delay * 20L);
-        } else {
-            player.sendMessage(parseRaw("tpa.no_request"));
         }
         return true;
     }

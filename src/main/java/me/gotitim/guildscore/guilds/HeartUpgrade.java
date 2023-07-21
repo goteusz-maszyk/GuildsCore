@@ -34,7 +34,7 @@ public class HeartUpgrade {
     private int shopSlot;
     private @NotNull List<Integer> levelPrices = new ArrayList<>();
 
-    public HeartUpgrade(String internal) {
+    private HeartUpgrade(String internal) {
         this.internal = internal;
         VALUES.put(internal, this);
     }

@@ -28,13 +28,6 @@ public class TpdenyCommand extends Command {
                 deniedPlayer.sendMessage(parseRaw("tpa.rejected_sender"));
                 player.sendMessage(parseRaw("tpa.rejected_player"));
             }
-        } else if (this.plugin.tpaStorage.tpaHereRequest.containsKey(player.getUniqueId())) {
-            deniedPlayer = Bukkit.getPlayer(this.plugin.tpaStorage.tpaHereRequest.get(player.getUniqueId()));
-            this.plugin.tpaStorage.tpaHereRequest.remove(player.getUniqueId());
-            if (deniedPlayer != null) {
-                deniedPlayer.sendMessage(parseRaw("tpa.rejected_sender"));
-                player.sendMessage(parseRaw("tpa.rejected_player"));
-            }
         } else {
             player.sendMessage(parseRaw("tpa.no_request"));
         }

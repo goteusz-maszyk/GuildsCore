@@ -111,6 +111,7 @@ messages:
     guild_required: "<red>Do TPA potrzebujesz banku gildii.</red>"
     cannot_afford: "<red>Nie stać cię na to. Koszt TPA: <gold>10</gold>; Koszt /back: <gold>20</gold></red>"
     broadcast: "<aqua>%player_name%</aqua><green> użył teleportu, kosztowało go to</green> <gold>%cost%</gold>"
+    heart_affected: "<red>Jesteś w promieniu działania serca gildii <gold>%targetguild_name%</gold></red>"
   shop:
     no_guild: "<red>Nie ma gildii - nie ma sklepu.</red>"
     title: "Guild shop"

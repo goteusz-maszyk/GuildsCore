@@ -28,6 +28,7 @@ import java.util.*;
 
 import static me.gotitim.guildscore.guilds.HeartUpgrade.*;
 import static me.gotitim.guildscore.util.Components.parseRaw;
+import static me.gotitim.guildscore.util.Locations.distanceHorizontal;
 
 public final class HeartListener implements Listener {
     private final GuildsCore plugin;
@@ -210,12 +211,6 @@ public final class HeartListener implements Listener {
         return null;
     }
 
-    public static double distanceHorizontal(Location loc1, Location loc2) {
-        if(!loc1.getWorld().equals(loc2.getWorld())) return Double.MAX_VALUE;
-        double deltaX = Math.abs(loc2.getX() - loc1.getX());
-        double deltaZ = Math.abs(loc2.getZ() - loc1.getZ());
-        return Math.sqrt(deltaX*deltaX + deltaZ*deltaZ);
-    }
     public static void resetTasks(Player player) {
         try{fatigueTasks.remove(player.getUniqueId()).cancel();} catch (NullPointerException ignored) {}
         try{regenTasks.remove(player.getUniqueId()).cancel();} catch (NullPointerException ignored) {}

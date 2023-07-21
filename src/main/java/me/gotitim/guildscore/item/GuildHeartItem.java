@@ -17,7 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 
-import static me.gotitim.guildscore.listener.HeartListener.distanceHorizontal;
+import static me.gotitim.guildscore.util.Locations.distanceHorizontal;
 import static me.gotitim.guildscore.util.Components.loreComponentRaw;
 import static me.gotitim.guildscore.util.Components.parseRaw;
 

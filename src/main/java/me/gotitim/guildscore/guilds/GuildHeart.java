@@ -1,5 +1,6 @@
 package me.gotitim.guildscore.guilds;
 
+import me.gotitim.guildscore.util.Locations;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
@@ -86,5 +87,9 @@ public class GuildHeart {
 
     public int getUpgrade(HeartUpgrade upgrade) {
         return upgrades.getOrDefault(upgrade, 0);
+    }
+
+    public boolean affects(Location location) {
+        return placed && Locations.distanceHorizontal(this.location, location) <= getUpgrade(HeartUpgrade.WORKING_RADIUS) * 16;
     }
 }

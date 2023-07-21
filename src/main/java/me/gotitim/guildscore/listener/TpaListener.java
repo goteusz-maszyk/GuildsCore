@@ -1,6 +1,7 @@
 package me.gotitim.guildscore.listener;
 
 import me.gotitim.guildscore.GuildsCore;
+import me.gotitim.guildscore.guilds.Guild;
 import me.gotitim.guildscore.placeholders.Placeholders;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,6 +21,13 @@ public class TpaListener implements Listener {
     @EventHandler
     public void onDeathEvent(PlayerDeathEvent e) {
         Player p = e.getEntity();
+        for (Guild g : plugin.getGuildManager().getGuilds().values()) {
+            if(g.getPlayers().contains(p.getUniqueId())) continue;
+            if(g.getHeart().affects(p.getLocation())) {
+                plugin.tpaStorage.backCommandLocation.remove(p.getUniqueId());
+                return;
+            }
+        }
         plugin.tpaStorage.backCommandLocation.put(p.getUniqueId(), p.getLocation());
         p.sendMessage(parseRaw("tpa.death", new Placeholders(p)));
     }
