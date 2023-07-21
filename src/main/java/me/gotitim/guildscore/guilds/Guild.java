@@ -85,7 +85,13 @@ public class Guild {
 
     public void setupBukkitTeam() {
         bukkitTeam = guildManager.getOrCreateTeam(id);
-        players.forEach(player -> bukkitTeam.addPlayer(Bukkit.getOfflinePlayer(player)));
+        for (UUID player : players) {
+            try {
+                bukkitTeam.addPlayer(Bukkit.getOfflinePlayer(player));
+            } catch (Exception e) {
+                guildManager.addAwaitingUUID(player);
+            }
+        }
 
         bukkitTeam.prefix(prefix);
         bukkitTeam.suffix(suffix);
@@ -167,7 +173,7 @@ public class Guild {
         config.set("players", mapUUIDs());
     }
 
-    public void invitePlayer(OfflinePlayer target, @NotNull OfflinePlayer inviter, boolean notify) {
+    public void invitePlayer(OfflinePlayer target, @Nullable OfflinePlayer inviter, boolean notify) {
         invites.add(target.getUniqueId());
         Player targetPlayer = target.getPlayer();
         if (!notify || targetPlayer == null) return;
@@ -294,5 +300,9 @@ public class Guild {
             if(Bukkit.getPlayer(player) != null) online.add(Bukkit.getPlayer(player));
         }
         return online;
+    }
+
+    void fixPlayer(Player player) {
+        bukkitTeam.addPlayer(player);
     }
 }

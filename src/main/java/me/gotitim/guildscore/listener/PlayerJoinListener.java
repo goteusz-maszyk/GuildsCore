@@ -35,6 +35,7 @@ public final class PlayerJoinListener implements Listener {
         for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
             updatePlayerTablist(onlinePlayer);
         }
+        plugin.getGuildManager().joinAwaitingUUID(player);
 
         for (Guild guild : plugin.getGuildManager().getGuilds().values()) {
             if(!guild.getInvites().contains(player.getUniqueId()))continue;

@@ -15,16 +15,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class GuildManager {
     private final GuildsCore plugin;
     private Scoreboard mainScoreboard;
     private final Map<String, Guild> guilds = new HashMap<>();
     private File guildsDir;
+    private List<UUID> awaitingUUIDs = new ArrayList<>();
 
     public GuildManager(GuildsCore gildieSokowy) {
         plugin = gildieSokowy;
@@ -77,9 +75,6 @@ public class GuildManager {
         }
         return null;
     }
-    public @Nullable Guild getGuild(Player player) {
-        return getGuild((OfflinePlayer) player);
-    }
 
     public Guild createGuild(@NotNull String name, @NotNull Player player) throws IllegalStateException {
         String guildId = name.toLowerCase().replaceAll(" ", "_");
@@ -112,5 +107,16 @@ public class GuildManager {
             if(guild.getHeart().getLocation().equals(heartLocation)) return guild;
         }
         return null;
+    }
+
+    public void addAwaitingUUID(UUID player) {
+        awaitingUUIDs.add(player);
+    }
+    public void joinAwaitingUUID(Player player) {
+        if(!awaitingUUIDs.remove(player.getUniqueId())) return;
+        Guild guild = getGuild(player);
+        if(guild != null) {
+            guild.fixPlayer(player);
+        }
     }
 }
