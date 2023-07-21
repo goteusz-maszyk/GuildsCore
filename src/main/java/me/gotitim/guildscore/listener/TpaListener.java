@@ -3,11 +3,14 @@ package me.gotitim.guildscore.listener;
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.guilds.Guild;
 import me.gotitim.guildscore.placeholders.Placeholders;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import static me.gotitim.guildscore.util.Components.parseRaw;
 
@@ -20,7 +23,13 @@ public class TpaListener implements Listener {
 
     @EventHandler
     public void onDeathEvent(PlayerDeathEvent e) {
-        Player p = e.getEntity();
+        Player p = e.getPlayer();
+        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) head.getItemMeta();
+        meta.setOwningPlayer(p);
+
+        head.setItemMeta(meta);
+        e.getDrops().add(head);
         for (Guild g : plugin.getGuildManager().getGuilds().values()) {
             if(g.getPlayers().contains(p.getUniqueId())) continue;
             if(g.getHeart().affects(p.getLocation())) {
