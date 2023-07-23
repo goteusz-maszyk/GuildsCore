@@ -40,9 +40,10 @@ public class Components {
     }
 
     public static @NotNull String getRaw(@NotNull String key) {
-        String res = core.getConfig().getString("messages." + key);
-        if(res.equals(key)) {
+        String res = core.getMessages().getString(key);
+        if(res == null) {
             core.getLogger().warning("MESSAGE NOT FOUND: " + key);
+            return key;
         }
         return res;
     }

@@ -52,6 +52,7 @@ public class GuildCommand extends Command {
 
             plugin.getGuildManager().getGuilds().values().forEach(g -> g.getConfig().reload());
             plugin.reloadConfig();
+            plugin.getMessages().reload();
             sender.sendMessage(parseRaw("guild_command.data_loaded"));
             return true;
         }

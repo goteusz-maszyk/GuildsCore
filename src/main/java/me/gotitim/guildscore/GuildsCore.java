@@ -10,6 +10,7 @@ import me.gotitim.guildscore.guilds.HeartUpgrade;
 import me.gotitim.guildscore.listener.*;
 import me.gotitim.guildscore.placeholders.*;
 import me.gotitim.guildscore.util.Components;
+import me.gotitim.guildscore.util.CustomConfig;
 import me.gotitim.guildscore.util.TPAStorage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,6 +23,7 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -34,6 +36,7 @@ public final class GuildsCore extends JavaPlugin {
     public final NamespacedKey itemIdKey = new NamespacedKey(this, "customitem");
     public final NamespacedKey guildIdKey = new NamespacedKey(this, "guildId");
     public final TPAStorage tpaStorage;
+    private @MonotonicNonNull CustomConfig messages;
 
     public GuildsCore() {
         this.guildManager = new GuildManager(this);
@@ -52,6 +55,8 @@ public final class GuildsCore extends JavaPlugin {
         }
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        messages = CustomConfig.setup(this, "messages", true);
+
         this.guildManager.init();
         Components.setCore(this);
 
@@ -108,5 +113,9 @@ public final class GuildsCore extends JavaPlugin {
                     this
             );
         }
+    }
+
+    public CustomConfig getMessages() {
+        return messages;
     }
 }
