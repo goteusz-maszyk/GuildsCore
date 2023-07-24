@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.gotitim</groupId>
-    <artifactId>GildieSokowy</artifactId>
+    <artifactId>GuildsCore</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>GildieSokowy</name>
+    <name>GuildsCore</name>
 
     <description>Dedicated plugin "core"</description>
     <properties>
