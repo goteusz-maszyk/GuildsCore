@@ -12,15 +12,20 @@ import java.io.IOException;
 
 public class CustomConfig extends YamlConfiguration {
     private final File file;
+    private final boolean allowSave;
+    private boolean loaded;
 
-    public CustomConfig(File file) {
+    public CustomConfig(File file, boolean allowSave) {
         this.file = file;
+        this.allowSave = allowSave;
+        this.loaded = false;
     }
 
-    public static CustomConfig setup(GuildsCore core, String name, boolean copy) {
+    public static CustomConfig setup(GuildsCore core, String name, boolean allowSave) {
         File file = new File(core.getDataFolder(), name + ".yml");
-        CustomConfig config = new CustomConfig(file);
-        if(copy && !file.exists()) {
+        CustomConfig config = new CustomConfig(file, allowSave);
+        if(!file.exists()) {
+            core.getLogger().info("Copying messages!");
             core.saveResource(name + ".yml", false);
         }
         config.setup();
@@ -40,6 +45,10 @@ public class CustomConfig extends YamlConfiguration {
     }
 
     public void save() {
+        if(!loaded) return;
+        if(!allowSave) {
+            throw new IllegalStateException("[GuildsCore] tried to save " + file.getName() + ", while it's a non-saving configuration!");
+        }
         try {
             save(file);
         } catch (IOException e) {
@@ -50,7 +59,9 @@ public class CustomConfig extends YamlConfiguration {
 
     public void reload() {
         try {
+            loaded = false;
             load(file);
+            loaded = true;
         } catch (IOException | InvalidConfigurationException e) {
             Bukkit.getLogger().severe("Failed to load " + file.getName() + " config file!");
             e.printStackTrace();

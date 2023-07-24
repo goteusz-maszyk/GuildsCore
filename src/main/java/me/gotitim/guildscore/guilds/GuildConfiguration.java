@@ -10,7 +10,7 @@ public class GuildConfiguration extends CustomConfig {
     private @MonotonicNonNull Guild guild = null;
 
     private GuildConfiguration(File file) {
-        super(file);
+        super(file, true);
     }
 
     public static GuildConfiguration setup(File file, Guild guild) {

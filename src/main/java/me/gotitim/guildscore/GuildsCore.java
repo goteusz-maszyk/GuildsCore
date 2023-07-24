@@ -55,7 +55,7 @@ public final class GuildsCore extends JavaPlugin {
         }
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
-        messages = CustomConfig.setup(this, "messages", true);
+        messages = CustomConfig.setup(this, "messages", false);
 
         this.guildManager.init();
         Components.setCore(this);
