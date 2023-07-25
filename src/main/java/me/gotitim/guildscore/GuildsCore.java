@@ -67,7 +67,6 @@ public final class GuildsCore extends JavaPlugin {
                 ChatListener.class,
                 HitListener.class,
                 HeartListener.class,
-                TpaListener.class,
                 CommonSpawnListener.class,
                 CraftListener.class); } catch (Exception ignored) {}
 

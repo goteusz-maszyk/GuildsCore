@@ -3,6 +3,7 @@ package me.gotitim.guildscore.util;
 import me.gotitim.guildscore.GuildsCore;
 import me.gotitim.guildscore.commands.tpa.*;
 import me.gotitim.guildscore.guilds.Guild;
+import me.gotitim.guildscore.listener.TpaListener;
 import me.gotitim.guildscore.placeholders.Placeholders;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -59,6 +60,8 @@ public class TPAStorage {
     }
 
     public void loadCommands() {
+        if(!plugin.getConfig().getBoolean("enable_tpa", true)) return;
+        plugin.getServer().getPluginManager().registerEvents(new TpaListener(plugin), plugin);
         new TpaCommand(plugin);
         new TpacceptCommand(plugin);
         new TpcancelCommand(plugin);
