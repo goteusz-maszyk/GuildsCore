@@ -37,6 +37,10 @@ public class GuildChatCommand extends Command {
             player.sendMessage(parseRaw("guild.chat_unavailable"));
             return true;
         }
+        if(!sender.hasPermission("guildscore.guildchat")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return false;
+        }
         String message = String.join(" ", Arrays.copyOfRange(args, 0, args.length));
         Placeholders ph = new Placeholders();
         ph.set("message", message);

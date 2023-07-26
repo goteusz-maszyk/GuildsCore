@@ -84,11 +84,31 @@ public final class GuildsCore extends JavaPlugin {
             new PlayerJoinListener(this).onJoin(new PlayerJoinEvent(onlinePlayer, Component.empty()));
         }
 
-        getServer().getPluginManager().addPermission(new Permission("guildscore.save", PermissionDefault.OP));
-        getServer().getPluginManager().addPermission(new Permission("guildscore.load", PermissionDefault.OP));
-
         HeartUpgrade.loadConfig(this);
         this.tpaStorage.loadCommands();
+
+        addPerm("save", false);
+        addPerm("load", false);
+        addPerm("guildchat", true);
+        addPerm("command.bank", true);
+        addPerm("command.shop", true);
+        addPerm("command.guild.create", true);
+        addPerm("command.guild.delete", true);
+        addPerm("command.guild.join", true);
+        addPerm("command.guild.leave", true);
+        addPerm("command.guild.invite", true);
+        addPerm("command.guild.prefix", true);
+        addPerm("command.guild.suffix", true);
+        addPerm("command.guild.color", true);
+        addPerm("command.guild.name", true);
+        addPerm("command.guild.icon", true);
+        addPerm("command.tpa", true);
+        addPerm("command.backTpa", true);
+        addPerm("command.backDeath", true);
+    }
+
+    private void addPerm(String permission, boolean isDefault) {
+        Bukkit.getPluginManager().addPermission(new Permission("guildscore." + permission, isDefault ? PermissionDefault.TRUE : PermissionDefault.OP));
     }
 
 

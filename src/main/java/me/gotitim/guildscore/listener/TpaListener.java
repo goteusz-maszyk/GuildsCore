@@ -30,6 +30,9 @@ public class TpaListener implements Listener {
 
         head.setItemMeta(meta);
         e.getDrops().add(head);
+        if(!e.getPlayer().hasPermission("guildscore.command.backDeath")) {
+            return;
+        }
         for (Guild g : plugin.getGuildManager().getGuilds().values()) {
             if(g.getPlayers().contains(p.getUniqueId())) continue;
             if(g.getHeart().affects(p.getLocation())) {

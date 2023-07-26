@@ -41,6 +41,11 @@ public final class ChatListener implements Listener {
                 event.getPlayer().sendMessage(parseRaw("guild.chat_unavailable", ph));
                 return;
             }
+            if(!event.getPlayer().hasPermission("guildscore.guildchat")) {
+                event.getPlayer().sendMessage(parseRaw("no_permission"));
+                toggleGuildChat(event.getPlayer());
+                return;
+            }
             guild.broadcast(MiniMessage.miniMessage().deserialize(ph.apply(plugin.getConfig().getString("guild_chat_format"))), false);
         }
     }

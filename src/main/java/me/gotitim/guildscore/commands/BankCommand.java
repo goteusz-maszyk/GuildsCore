@@ -21,7 +21,7 @@ import static me.gotitim.guildscore.util.Components.*;
 
 public class BankCommand extends Command {
     private final GuildsCore plugin;
-    private NamespacedKey sellableKey;
+    private final NamespacedKey sellableKey;
 
     public BankCommand(GuildsCore plugin) {
         super("bank");
@@ -36,6 +36,10 @@ public class BankCommand extends Command {
         Guild guild = plugin.getGuildManager().getGuild(player);
         if(guild == null) {
             player.sendMessage(loreComponentRaw("bank.no_guild"));
+            return false;
+        }
+        if(!sender.hasPermission("guildscore.command.bank")) {
+            player.sendMessage(parseRaw("no_permission"));
             return false;
         }
         createInventory(player, guild);

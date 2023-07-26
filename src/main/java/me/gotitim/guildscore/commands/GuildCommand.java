@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static me.gotitim.guildscore.util.Components.getNoPermissionMessage;
 import static me.gotitim.guildscore.util.Components.parseRaw;
@@ -95,6 +92,11 @@ public class GuildCommand extends Command {
         Guild guild = guildCheck(plugin, player);
         if(guild == null) return;
 
+        if(!player.hasPermission("guildscore.command.guild.delete")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         guild.delete();
         player.sendMessage(parseRaw("guild_command.deleted"));
     }
@@ -107,6 +109,12 @@ public class GuildCommand extends Command {
             player.sendMessage(parseRaw("guild_command.invite_usage"));
             return;
         }
+
+        if(!player.hasPermission("guildscore.command.guild.invite")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         OfflinePlayer target = Bukkit.getOfflinePlayer(args[1]);
         guild.invitePlayer(target, player, true);
     }
@@ -114,6 +122,11 @@ public class GuildCommand extends Command {
     private void leaveGuild(Player player) {
         Guild guild = guildCheck(plugin, player);
         if(guild == null) return;
+
+        if(!player.hasPermission("guildscore.command.guild.leave")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
 
         guild.removePlayer(player);
     }
@@ -127,29 +140,40 @@ public class GuildCommand extends Command {
             if(sender.hasPermission("guildscore.save")) results.add("save");
             if(sender.hasPermission("guildscore.load")) results.add("load");
             if(guild == null) {
-                results.add("create");
-                results.add("join");
+                resultsAdd(sender, "create", results);
+                resultsAdd(sender, "join", results);
             } else {
-                results.add("invite");
-                results.add("leave");
-                results.add("prefix");
-                results.add("suffix");
-                results.add("color");
-                results.add("name");
-                results.add("delete");
-                results.add("icon");
+                resultsAdd(sender, "invite", results);
+                resultsAdd(sender, "leave", results);
+                resultsAdd(sender, "prefix", results);
+                resultsAdd(sender, "suffix", results);
+                resultsAdd(sender, "color", results);
+                resultsAdd(sender, "name", results);
+                resultsAdd(sender, "delete", results);
+                resultsAdd(sender, "icon", results);
             }
         } else if (args.length >= 2) {
             switch (args[0]) {
-                case "color" -> results.addAll(NamedTextColor.NAMES.values().stream().map(NamedTextColor::toString).toList());
-                case "invite" -> results.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).toList());
-                case "join" -> results.addAll(plugin.getGuildManager().getGuilds().values().stream().map(Guild::getId).toList());
-                case "icon" -> results.addAll(Arrays.stream(Material.values()).map(Material::toString).toList());
+                case "color" -> resultsAdd(sender, "color", () ->
+                        results.addAll(NamedTextColor.NAMES.values().stream().map(NamedTextColor::toString).toList()));
+                case "invite" -> resultsAdd(sender, "color", () ->
+                        results.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).toList()));
+                case "join" -> resultsAdd(sender, "color", () ->
+                        results.addAll(plugin.getGuildManager().getGuilds().values().stream().map(Guild::getId).toList()));
+                case "icon" -> resultsAdd(sender, "icon", () ->
+                        results.addAll(Arrays.stream(Material.values()).map(Material::toString).toList()));
             }
         }
 
         results.sort(Comparator.naturalOrder());
 
         return StringUtil.copyPartialMatches(args[args.length-1], results, new ArrayList<>());
+    }
+
+    private void resultsAdd(CommandSender sender, String subcommand, List<String> results) {
+        resultsAdd(sender, subcommand, () -> results.add(subcommand));
+    }
+    private void resultsAdd(CommandSender sender, String subcommand, Runnable run) {
+        if(sender.hasPermission("guildscore.command.guild." + subcommand)) run.run();
     }
 }

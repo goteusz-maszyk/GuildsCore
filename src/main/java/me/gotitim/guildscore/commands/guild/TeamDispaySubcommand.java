@@ -19,6 +19,14 @@ public class TeamDispaySubcommand {
         Guild guild = guildCheck(plugin, player);
         if(guild == null) return;
 
+        if(isSuffix && !player.hasPermission("guildscore.command.guild.suffix")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        } else if(!isSuffix && !player.hasPermission("guildscore.command.guild.prefix")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         String raw = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
         Component comp = Component.text(isSuffix ? (" " + raw) : (raw + " "));
@@ -35,6 +43,11 @@ public class TeamDispaySubcommand {
     public static void color(Player player, String[] args, GuildsCore plugin) {
         Guild guild = guildCheck(plugin, player);
         if(guild == null) return;
+
+        if(!player.hasPermission("guildscore.command.guild.color")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
 
         if(args.length == 2) {
             NamedTextColor ntc = NamedTextColor.NAMES.value(args[1]);
@@ -54,6 +67,11 @@ public class TeamDispaySubcommand {
         Guild guild = guildCheck(plugin, player);
         if(guild == null) return;
 
+        if(!player.hasPermission("guildscore.command.guild.name")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         String name = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
 
         guild.setName(name);
@@ -63,6 +81,12 @@ public class TeamDispaySubcommand {
     public static void icon(Player player, String[] args, GuildsCore plugin) {
         Guild guild = guildCheck(plugin, player);
         if(guild == null) return;
+
+        if(!player.hasPermission("guildscore.command.guild.icon")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         if(args.length < 2) {
             guild.setIcon(null);
             player.sendMessage(parseRaw("guild_command.icon_reset"));

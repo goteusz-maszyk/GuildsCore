@@ -20,6 +20,11 @@ public class TpaCommand extends Command {
 
     @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
+        if(!sender.hasPermission("guildscore.command.tpa")) {
+            sender.sendMessage(parseRaw("no_permission"));
+            return true;
+        }
+
         Player player = (Player)sender;
         long keepAliveRequest;
 

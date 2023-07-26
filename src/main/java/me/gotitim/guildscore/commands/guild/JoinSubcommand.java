@@ -9,6 +9,11 @@ import static me.gotitim.guildscore.util.Components.parseRaw;
 
 public class JoinSubcommand {
     public static void joinGuild(Player player, String[] args, GuildsCore plugin) {
+        if(!player.hasPermission("guildscore.command.guild.join")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         Placeholders ph = new Placeholders(player);
         if(args.length < 2) {
             player.sendMessage(parseRaw("join.id_missing", ph));

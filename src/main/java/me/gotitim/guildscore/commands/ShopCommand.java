@@ -43,6 +43,11 @@ public class ShopCommand extends Command {
             player.sendMessage(parseRaw("shop.no_guild"));
             return false;
         }
+
+        if(!sender.hasPermission("guildscore.command.shop")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return false;
+        }
         createInventory(player, guild);
         return true;
     }

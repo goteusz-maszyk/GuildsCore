@@ -60,8 +60,9 @@ public class TpacceptCommand extends Command {
                     }
                     guild.bankWithdraw(tpaCost);
                     guild.broadcast(parseRaw("tpa.broadcast", new Placeholders(theSender).set("cost", tpaCost)), false);
-
-                    this.plugin.tpaStorage.backCommandLocation.put(theSender.getUniqueId(), theSender.getLocation());
+                    if(sender.hasPermission("guildscore.command.backTpa")) {
+                        this.plugin.tpaStorage.backCommandLocation.put(theSender.getUniqueId(), theSender.getLocation());
+                    }
 
                     theSender.teleport(player);
                 }

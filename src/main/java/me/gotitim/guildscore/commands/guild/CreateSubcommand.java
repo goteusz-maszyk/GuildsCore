@@ -11,6 +11,11 @@ import static me.gotitim.guildscore.util.Components.parseRaw;
 
 public class CreateSubcommand {
     public static void createGuild(Player player, String[] args, GuildsCore plugin) {
+        if(!player.hasPermission("guildscore.command.guild.create")) {
+            player.sendMessage(parseRaw("no_permission"));
+            return;
+        }
+
         Placeholders ph = new Placeholders(player);
         if(plugin.getGuildManager().getGuild(player) != null) {
             player.sendMessage(parseRaw("guild_command.create_in_guild"));
