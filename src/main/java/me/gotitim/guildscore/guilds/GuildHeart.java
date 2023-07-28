@@ -2,6 +2,7 @@ package me.gotitim.guildscore.guilds;
 
 import me.gotitim.guildscore.util.Locations;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.NotNull;
@@ -91,5 +92,12 @@ public class GuildHeart {
 
     public boolean affects(Location location) {
         return placed && Locations.distanceHorizontal(this.location, location) <= getUpgrade(HeartUpgrade.WORKING_RADIUS) * 16;
+    }
+
+    public boolean affects(Chunk chunk) {
+        return affects(chunk.getBlock(0, 0, 0).getLocation()) ||
+                affects(chunk.getBlock(15, 0, 0).getLocation()) ||
+                affects(chunk.getBlock(0, 0, 15).getLocation()) ||
+                affects(chunk.getBlock(15, 0, 15).getLocation());
     }
 }

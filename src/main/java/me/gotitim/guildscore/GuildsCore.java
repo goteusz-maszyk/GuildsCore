@@ -102,6 +102,7 @@ public final class GuildsCore extends JavaPlugin {
         addPerm("command.guild.color", true);
         addPerm("command.guild.name", true);
         addPerm("command.guild.icon", true);
+        addPerm("command.guild.chunkload", true);
         addPerm("command.tpa", true);
         addPerm("command.backTpa", true);
         addPerm("command.backDeath", true);

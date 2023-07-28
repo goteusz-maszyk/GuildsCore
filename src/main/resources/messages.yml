@@ -44,6 +44,10 @@ guild:
   chat_enabled: "<green>Guild chat enabled.</green>"
   chat_disabled: "<red>Guild chat disabled.</red>"
   chat_unavailable: "<red>You are not in a guild, so you can't send guild chat messages.</red>"
+  chunk_loaded: "<green>%player_name% force-loaded chunk %chunk_z%/%chunk_z%!</green>"
+  chunk_limit_reached: "<red>Your guild already has 5 chunks force-loaded.</red>"
+  chunk_unloaded: "<green>%player_name% removed force-load for chunk %chunk_z%/%chunk_z%!</green>"
+  chunk_not_loaded: "<yellow>This chunk wasn't force-loaded.</yellow>"
 compass:
   name: "<aqua>Guild Compass</aqua>"
   tooltip_1: "<dark_green>Always points towards selected guild's heart</dark_green>"

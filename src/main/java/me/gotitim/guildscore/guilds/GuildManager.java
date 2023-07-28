@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class GuildManager {
     private Scoreboard mainScoreboard;
     private final Map<String, Guild> guilds = new HashMap<>();
     private File guildsDir;
-    private List<UUID> awaitingUUIDs = new ArrayList<>();
+    private final List<UUID> awaitingUUIDs = new ArrayList<>();
 
     public GuildManager(GuildsCore gildieSokowy) {
         plugin = gildieSokowy;
@@ -118,5 +118,20 @@ public class GuildManager {
         if(guild != null) {
             guild.fixPlayer(player);
         }
+    }
+
+    /**
+     * @param player Player to check
+     * @param chunk Should whole chunk or just player location be checked?
+     * @return guild
+     */
+    public @Nullable Guild negativeHeartAffect(Player player, boolean chunk) {
+        for (Guild guild : guilds.values()) {
+            if(guild.getPlayers().contains(player.getUniqueId())) continue;
+            if (chunk && guild.getHeart().affects(player.getChunk()) || !chunk && guild.getHeart().affects(player.getLocation())) {
+                return guild;
+            }
+        }
+        return null;
     }
 }

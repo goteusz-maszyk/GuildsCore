@@ -1,6 +1,7 @@
 package me.gotitim.guildscore.commands;
 
 import me.gotitim.guildscore.GuildsCore;
+import me.gotitim.guildscore.commands.guild.ChunkLoadSubcommand;
 import me.gotitim.guildscore.commands.guild.CreateSubcommand;
 import me.gotitim.guildscore.commands.guild.JoinSubcommand;
 import me.gotitim.guildscore.commands.guild.TeamDispaySubcommand;
@@ -77,6 +78,8 @@ public class GuildCommand extends Command {
                 TeamDispaySubcommand.name(player, args, plugin);
             case "icon" ->
                 TeamDispaySubcommand.icon(player, args, plugin);
+            case "chunkload" ->
+                ChunkLoadSubcommand.chunkLoad(player, plugin);
         }
         return true;
     }
@@ -151,6 +154,7 @@ public class GuildCommand extends Command {
                 resultsAdd(sender, "name", results);
                 resultsAdd(sender, "delete", results);
                 resultsAdd(sender, "icon", results);
+                resultsAdd(sender, "chunkload", results);
             }
         } else if (args.length >= 2) {
             switch (args[0]) {

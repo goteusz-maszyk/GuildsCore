@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Team;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +26,7 @@ import static me.gotitim.guildscore.util.Components.*;
 
 public class Guild {
     public static final Map<Material, Integer> BANK_MATERIALS = new HashMap<>();
-    private final String id;
+    private final @NonNull String id;
     private String name;
     private Component prefix = Component.empty();
     private Component suffix = Component.empty();
@@ -40,6 +41,7 @@ public class Guild {
     private final List<UUID> invites = new ArrayList<>();
     private NamedTextColor color;
     private int bank;
+    private final GuildChunkLoader chunkLoader;
 
     /**
      * Creates a new guild, used in a /guild create command
@@ -50,7 +52,7 @@ public class Guild {
      * @param guildManager Current guild manager instance
      * @throws IllegalArgumentException when an id is already in use
      */
-    Guild(String id, String name, Player player, GuildManager guildManager) {
+    Guild(@NonNull String id, String name, Player player, GuildManager guildManager) {
         this.guildManager = guildManager;
         this.id = id;
         this.config = GuildConfiguration.setup(this);
@@ -65,6 +67,8 @@ public class Guild {
 
         player.getInventory().addItem(new GuildHeartItem(getGuildManager().getPlugin()).toItemStack());
 
+        chunkLoader = new GuildChunkLoader(this);
+
         setupBukkitTeam();
     }
 
@@ -74,10 +78,12 @@ public class Guild {
      * @param guildManager Current guild manager instance
      */
     Guild(@NotNull GuildConfiguration config, GuildManager guildManager) {
-        this.id = config.getString("id");
+        this.id = Objects.requireNonNull(config.getString("id"));
         this.config = config;
         this.guildManager = guildManager;
         this.heart = new GuildHeart(this);
+
+        chunkLoader = new GuildChunkLoader(this);
 
         loadConfig();
         setupBukkitTeam();
@@ -130,7 +136,7 @@ public class Guild {
         return new ArrayList<>(players);
     }
 
-    public String getId() {
+    public @NonNull String getId() {
         return id;
     }
     public GuildManager getGuildManager() {
@@ -201,7 +207,7 @@ public class Guild {
         this.prefix = MiniMessage.miniMessage().deserialize(config.getString("prefix", ""));
         this.suffix = MiniMessage.miniMessage().deserialize(config.getString("suffix", ""));
         this.color = Optional.ofNullable(config.getString("color")).map(NamedTextColor.NAMES::value).orElse(null);
-        this.icon = Objects.requireNonNullElse(Material.getMaterial(config.getString("icon")), Material.COBBLESTONE);
+        this.icon = Objects.requireNonNullElse(Material.getMaterial(config.getString("icon", "COBBLESTONE")), Material.COBBLESTONE);
         this.bank = config.getInt("bank");
 
         this.players.clear();
@@ -252,6 +258,7 @@ public class Guild {
 
     public void delete() {
         this.bukkitTeam.unregister();
+        //noinspection ResultOfMethodCallIgnored
         this.config.getFile().delete();
         this.guildManager.getGuilds().remove(id);
     }
@@ -304,5 +311,14 @@ public class Guild {
 
     void fixPlayer(Player player) {
         bukkitTeam.addPlayer(player);
+    }
+
+    public GuildChunkLoader getChunkLoader() {
+        return chunkLoader;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof Guild guild && guild.id.equals(this.id);
     }
 }

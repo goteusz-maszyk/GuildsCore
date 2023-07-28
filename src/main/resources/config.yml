@@ -2,6 +2,7 @@ guild_chat_format: "<green>[GuildChat] </green><aqua><%player_name%></aqua> %mes
 heart_place_range: 384 # 16*24 blocks
 allow_heart_destroy: true
 enable_tpa: true # You can disable TPA if you have some other provider (or just don't want it)
+forceload_limit: 5
 tablist:
   header:
     - "        <gold>»»» MY-BEST-GUILD-SERVER-EVER «««</gold>        "
